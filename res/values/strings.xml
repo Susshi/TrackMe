@@ -10,5 +10,8 @@
     <string name="empty"></string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="all">All</string>
+    <string name="friends">Friends only</string>
+    <string name="custom">Custom</string>
 
 </resources>

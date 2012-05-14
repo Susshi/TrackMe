@@ -18,10 +18,11 @@
             android:text="Insert privacy settings here"
             android:textSize="20dp" />
     </LinearLayout>
-
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="0.0"
         android:gravity="center" >
 
         <Button
