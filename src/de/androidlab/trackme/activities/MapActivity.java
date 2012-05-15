@@ -1,5 +1,6 @@
 package de.androidlab.trackme.activities;
 
+import de.androidlab.trackme.map.ColorGenerator;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
@@ -56,7 +57,7 @@ public class MapActivity extends Activity {
         });
         friendsBtn.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
-				// TODO
+			    // TODO
 			}
         });
         
