@@ -17,6 +17,15 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 
 public class RouteListActivity extends ListActivity {
+	
+	// TODO Testdaten entfernen
+	private static RouteListEntry[] data = new RouteListEntry[]
+			{
+        		new RouteListEntry(R.drawable.ic_launcher, "Ich", false),
+        		new RouteListEntry(R.drawable.ic_launcher, "Du", false),
+        		new RouteListEntry(R.drawable.ic_launcher, "Er", false),
+        		new RouteListEntry(R.drawable.ic_launcher, "Sie", false)
+			};
     
     /** Called when the activity is first created. */
     @Override
@@ -51,27 +60,17 @@ public class RouteListActivity extends ListActivity {
         // Initialize List View
         ListView lv = getListView();
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        // Fetch Data to show
-        RouteListEntry[] data = fetchData();
         // Add Data to list
         lv.setAdapter(new RouteListAdapter(this, R.layout.routelist_entry, data));
         // Register Listeners
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CheckBox checkbox = (CheckBox)view.findViewById(R.id.routelist_entry_checkbox);
-                getListView().setItemChecked(position, !checkbox.isChecked());
-                checkbox.setChecked(!checkbox.isChecked());
+                RouteListEntry entry = (RouteListEntry)parent.getItemAtPosition(position);
+                entry.checked = !entry.checked;
+                getListView().setItemChecked(position, entry.checked);
+                ((CheckBox)view.findViewById(R.id.routelist_entry_checkbox)).setChecked(entry.checked);
             }
         });
         
-    }
-
-    // TODO just test data
-    private RouteListEntry[] fetchData() {
-        RouteListEntry[] data = new RouteListEntry[3];
-        data[0] = new RouteListEntry(R.drawable.ic_launcher, "Ich", false);
-        data[1] = new RouteListEntry(R.drawable.ic_launcher, "Du", false);
-        data[2] = new RouteListEntry(R.drawable.ic_launcher, "Er", false);
-        return data;
     }
 }

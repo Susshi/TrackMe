@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="@string/empty"/>
+        android:text="@string/empty" android:clickable="false"/>
 
     <TextView
         android:id="@+id/routelist_entry_name"

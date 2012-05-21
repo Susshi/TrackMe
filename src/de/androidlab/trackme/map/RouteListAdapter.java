@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.CheckBox;
 
 public class RouteListAdapter extends ArrayAdapter<RouteListEntry> {
 
@@ -34,6 +35,7 @@ public class RouteListAdapter extends ArrayAdapter<RouteListEntry> {
         RouteListEntry entry = entries[position];
         ((ImageView)row.findViewById(R.id.routelist_entry_image)).setImageResource(entry.image);
         ((TextView)row.findViewById(R.id.routelist_entry_name)).setText(entry.name);
+        ((CheckBox)row.findViewById(R.id.routelist_entry_checkbox)).setChecked(entry.checked);
         return row;
     }
     
