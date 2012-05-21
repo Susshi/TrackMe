@@ -3,10 +3,12 @@ package de.androidlab.trackme.activities;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
+import de.androidlab.trackme.map.ColorGenerator;
 import de.androidlab.trackme.map.RouteListEntry;
 import de.androidlab.trackme.map.RouteListAdapter;
 import android.app.Activity;
 import android.app.ListActivity;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,13 +21,13 @@ import android.widget.ListView;
 public class RouteListActivity extends ListActivity {
 	
 	// TODO Testdaten entfernen
-	private static RouteListEntry[] data = new RouteListEntry[]
-			{
-        		new RouteListEntry(R.drawable.ic_launcher, "Ich", false),
-        		new RouteListEntry(R.drawable.ic_launcher, "Du", false),
-        		new RouteListEntry(R.drawable.ic_launcher, "Er", false),
-        		new RouteListEntry(R.drawable.ic_launcher, "Sie", false)
-			};
+	private static RouteListEntry[] data = new RouteListEntry[20];
+	static {
+		ColorGenerator cg = new ColorGenerator(data.length);
+		for (int i = 0; i < data.length; i++) {
+			data[i] = new RouteListEntry(R.drawable.ic_launcher, "" + i, false, cg.getNewColor(), null);
+		}
+	}
     
     /** Called when the activity is first created. */
     @Override

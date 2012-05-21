@@ -5,7 +5,7 @@ import android.util.Log;
 
 public class ColorGenerator {
     
-    private static final float SATURATION = 0.9F;
+    private static final float SATURATION = 0.7F;
     private static final float LIGHTNESS = 0.5F;
     private int[] colorList;
     private int posStart;
@@ -39,7 +39,6 @@ public class ColorGenerator {
     }
     
     private void generateNewColorList() {
-        Log.d("Test", "-----------");
         float start = (float) (stepSize/2);
         int count = (int) (1 + (360 - start)/stepSize);
         colorList = new int[count];
@@ -51,8 +50,8 @@ public class ColorGenerator {
     
     private int generateColor(float hue) {
         float[] color = new float[] {hue,
-                                     SATURATION,
-                                     LIGHTNESS};
+                                     (float) (SATURATION + Math.random() * 0.3F),
+                                     (float) (LIGHTNESS + Math.random() * 0.5F)};
         return Color.HSVToColor(color);
     }
 }

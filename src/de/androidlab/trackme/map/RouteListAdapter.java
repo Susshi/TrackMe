@@ -1,5 +1,7 @@
 package de.androidlab.trackme.map;
 
+import java.util.Collections;
+
 import de.androidlab.trackme.R;
 import android.app.Activity;
 import android.content.Context;
@@ -36,6 +38,7 @@ public class RouteListAdapter extends ArrayAdapter<RouteListEntry> {
         ((ImageView)row.findViewById(R.id.routelist_entry_image)).setImageResource(entry.image);
         ((TextView)row.findViewById(R.id.routelist_entry_name)).setText(entry.name);
         ((CheckBox)row.findViewById(R.id.routelist_entry_checkbox)).setChecked(entry.checked);
+        row.findViewById(R.id.routelist_root).setBackgroundColor(entry.color);
         return row;
     }
     
