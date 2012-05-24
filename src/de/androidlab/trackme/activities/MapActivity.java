@@ -1,6 +1,7 @@
 package de.androidlab.trackme.activities;
 
 import de.androidlab.trackme.map.ColorGenerator;
+import de.androidlab.trackme.map.RouteListEntry;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
@@ -18,6 +19,15 @@ import android.widget.Toast;
 
 public class MapActivity extends Activity {
     
+	// TODO Testdaten entfernen
+	public static RouteListEntry[] data = new RouteListEntry[20];
+	static {
+		ColorGenerator cg = new ColorGenerator(data.length);
+		for (int i = 0; i < data.length; i++) {
+			data[i] = new RouteListEntry("0", R.drawable.ic_launcher, "" + i, cg.getNewColor(), false, false ,null);
+		}
+	}
+	
     private final static int SHOWROUTESREQUEST = 0;
     private CompoundButton lastActive = null;
     
@@ -75,19 +85,19 @@ public class MapActivity extends Activity {
         });
     }
     
+    public void onStart() {
+    	// TODO update the route data
+    }
+    
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
         case SHOWROUTESREQUEST: if (resultCode == Activity.RESULT_OK) {
-                                    processShowRoutesResult(data);
+                                    // TODO process result
                                     lastActive = (RadioButton)findViewById(R.id.mapview_radio_custom);
                                 } else {
                                     lastActive.setChecked(true);
                                 }
                                 break;
         }
-    }
-
-    private void processShowRoutesResult(Intent data) {
-        // TODO
     }
 }

@@ -19,15 +19,6 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 
 public class RouteListActivity extends ListActivity {
-	
-	// TODO Testdaten entfernen
-	private static RouteListEntry[] data = new RouteListEntry[20];
-	static {
-		ColorGenerator cg = new ColorGenerator(data.length);
-		for (int i = 0; i < data.length; i++) {
-			data[i] = new RouteListEntry(R.drawable.ic_launcher, "" + i, false, cg.getNewColor(), null);
-		}
-	}
     
     /** Called when the activity is first created. */
     @Override
@@ -63,7 +54,7 @@ public class RouteListActivity extends ListActivity {
         ListView lv = getListView();
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         // Add Data to list
-        lv.setAdapter(new RouteListAdapter(this, R.layout.routelist_entry, data));
+        lv.setAdapter(new RouteListAdapter(this, R.layout.routelist_entry, MapActivity.data));
         // Register Listeners
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
