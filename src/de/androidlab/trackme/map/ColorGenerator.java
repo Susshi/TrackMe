@@ -14,12 +14,14 @@ public class ColorGenerator {
     private double stepSize;
     
     public ColorGenerator(int count) {
-        stepSize = 360/count;
-        colorList = new int[count];
-        posStart = 0;
-        posEnd = count - 1;
-        for (int i = 0; i < count; i++) {
-            colorList[i] = generateColor((float)(i*stepSize));
+        if (count != 0) {
+	    	stepSize = 360/count;
+	        colorList = new int[count];
+	        posStart = 0;
+	        posEnd = count/2;
+	        for (int i = 0; i < count; i++) {
+	            colorList[i] = generateColor((float)(i*stepSize));
+	        }
         }
     }
     
@@ -28,12 +30,12 @@ public class ColorGenerator {
             if ((alternating++%2) == 0) {
                 return colorList[posStart++];
             } else {
-                return colorList[posEnd--];
+                return colorList[posEnd++];
             }
         } else {
             generateNewColorList();
             posStart = 0;
-            posEnd = colorList.length - 1;
+            posEnd = colorList.length/2;
             return getNewColor();
         }
     }
