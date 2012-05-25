@@ -37,7 +37,7 @@ public class RouteListAdapter extends ArrayAdapter<RouteListEntry> {
         RouteListEntry entry = entries[position];
         ((ImageView)row.findViewById(R.id.routelist_entry_image)).setImageResource(entry.image);
         ((TextView)row.findViewById(R.id.routelist_entry_name)).setText(entry.name);
-        ((CheckBox)row.findViewById(R.id.routelist_entry_checkbox)).setChecked(entry.checked);
+        ((CheckBox)row.findViewById(R.id.routelist_entry_checkbox)).setChecked(entry.isChecked);
         row.findViewById(R.id.routelist_root).setBackgroundColor(entry.color);
         return row;
     }

@@ -59,9 +59,9 @@ public class RouteListActivity extends ListActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 RouteListEntry entry = (RouteListEntry)parent.getItemAtPosition(position);
-                entry.checked = !entry.checked;
-                getListView().setItemChecked(position, entry.checked);
-                ((CheckBox)view.findViewById(R.id.routelist_entry_checkbox)).setChecked(entry.checked);
+                entry.isChecked = !entry.isChecked;
+                getListView().setItemChecked(position, entry.isChecked);
+                ((CheckBox)view.findViewById(R.id.routelist_entry_checkbox)).setChecked(entry.isChecked);
             }
         });
         

@@ -4,87 +4,67 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+        
+		<com.google.android.maps.MapView
+		    android:id="@+id/mapview_view_map"
+		    android:layout_width="fill_parent"
+		    android:layout_height="fill_parent"
+		    android:layout_weight="1"
+		    android:apiKey="0i6svesw_pN4n3xfBFH65NAz7qgqg2jjCBkSl-w"
+		    android:clickable="true" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:orientation="vertical" >
+       <RadioGroup
+           android:id="@+id/mapview_radiogroup_routefilter"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="0.0"
+           android:orientation="horizontal" >
+
+           <RadioButton
+               android:id="@+id/mapview_radio_all"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:checked="true"
+               android:text="@string/all" />
+
+           <RadioButton
+               android:id="@+id/mapview_radio_friends"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:text="@string/friends" />
+
+           <RadioButton
+               android:id="@+id/mapview_radio_custom"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_weight="1"
+               android:text="@string/custom" />
+
+       </RadioGroup>
+       <LinearLayout
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           android:layout_weight="0"
+           android:gravity="center" >
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" >
-
-            <ZoomControls
-                android:id="@+id/mapview_btn_zoom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
-
-            <View
-                android:id="@+id/mapview_view_map"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </RelativeLayout>
-
-        <RadioGroup
-            android:id="@+id/mapview_radiogroup_routefilter"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.0"
-            android:orientation="horizontal" >
-
-            <RadioButton
-                android:id="@+id/mapview_radio_all"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="true"
-                android:text="@string/all" />
-
-            <RadioButton
-                android:id="@+id/mapview_radio_friends"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/friends" />
-
-            <RadioButton
-                android:id="@+id/mapview_radio_custom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/custom" />
-
-        </RadioGroup>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:gravity="center" >
+           <Button
+               android:id="@+id/mapview_btn_home"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_weight="0"
+               android:background="@drawable/ic_menu_home"
+               android:text="@string/empty" />
 
-            <Button
-                android:id="@+id/mapview_btn_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/ic_menu_home"
-                android:text="@string/empty" />
-
-            <Button
-                android:id="@+id/mapview_btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/ic_menu_back"
-                android:text="@string/empty" />
+           <Button
+               android:id="@+id/mapview_btn_back"
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:layout_weight="0"
+               android:background="@drawable/ic_menu_back"
+               android:text="@string/empty" />
 
-        </LinearLayout>
-
-    </LinearLayout>
+       </LinearLayout>
 
 </LinearLayout>

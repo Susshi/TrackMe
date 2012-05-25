@@ -1,7 +1,6 @@
 package de.androidlab.trackme.map;
 
-import com.mapquest.android.maps.GeoPoint;
-import com.mapquest.android.maps.LineOverlay;
+import com.google.android.maps.GeoPoint;
 
 public class RouteListEntry {
     public String id;
@@ -9,7 +8,7 @@ public class RouteListEntry {
     public String name;
     public int color;
     public boolean isFriend;
-    public boolean checked;
+    public boolean isChecked;
     public GeoPoint[] coords;
     public LineOverlay line;
     
@@ -19,7 +18,7 @@ public class RouteListEntry {
         this.name = name;
         this.color = color;
         this.isFriend = isFriend;
-        this.checked = checked;
+        this.isChecked = checked;
         this.coords = coords;
     }
 }
