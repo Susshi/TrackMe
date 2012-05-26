@@ -1,6 +1,7 @@
 package de.androidlab.trackme.activities;
 
 import de.androidlab.trackme.R;
+import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
 import de.androidlab.trackme.map.ColorGenerator;
@@ -36,7 +37,6 @@ public class RouteListActivity extends ListActivity {
         Button okBtn = (Button)findViewById(R.id.routelist_btn_ok);             
         okBtn.setOnClickListener(new View.OnClickListener() { 
             public void onClick(View v) {
-                // TODO generate Result
                 setResult(Activity.RESULT_OK);
                 finish();
             }
@@ -54,7 +54,7 @@ public class RouteListActivity extends ListActivity {
         ListView lv = getListView();
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         // Add Data to list
-        lv.setAdapter(new RouteListAdapter(this, R.layout.routelist_entry, MapActivity.data));
+        lv.setAdapter(new RouteListAdapter(this, R.layout.routelist_entry, MapData.data));
         // Register Listeners
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

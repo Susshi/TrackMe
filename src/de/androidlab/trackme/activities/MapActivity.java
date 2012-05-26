@@ -18,6 +18,7 @@ import de.androidlab.trackme.map.ContactInfo;
 import de.androidlab.trackme.map.LineOverlay;
 import de.androidlab.trackme.map.RouteListEntry;
 import de.androidlab.trackme.R;
+import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
 import android.app.Activity;
@@ -77,11 +78,8 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 	}
 	// TODO Testdaten Ende
     private final int SHOWROUTESREQUEST = 0;
-    private CompoundButton lastActive;
     private MapView map;
     private MyLocationOverlay myLocationOverlay;
-    private static ColorGenerator colorGenerator = new ColorGenerator(10);
-    public static List<RouteListEntry> data = new ArrayList<RouteListEntry>();
     private List<RouteListEntry> toRemove = new LinkedList<RouteListEntry>();
     private List<RouteListEntry> toAdd = new LinkedList<RouteListEntry>();
     private boolean updateDisabled = false;
@@ -100,13 +98,32 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         Button backBtn = (Button)findViewById(R.id.mapview_btn_back);             
         backBtn.setOnClickListener(new BackButtonListener(this));
         
+        // Radio Buttons
         setupCustomRadioButton();
         setupFriendsRadioButton();
         setupAllRadioButton();
         
+        // Map
         setupMapView();
         setupMyLocation();
         
+        // Update
+        update();
+        updateDisabled = true;
+        
+        // Restore old state
+        restoreOldData();
+    }
+    
+    private void restoreOldData() {
+        switch(MapData.lastActive) {
+        case R.id.mapview_radio_all: ((RadioButton)findViewById(R.id.mapview_radio_all)).performClick();
+                                     break;
+        case R.id.mapview_radio_friends: ((RadioButton)findViewById(R.id.mapview_radio_friends)).performClick();
+                                         break;
+        case R.id.mapview_radio_custom: ((RadioButton)findViewById(R.id.mapview_radio_custom)).setChecked(true);
+                                        break;
+        }
     }
     
     private void update() {
@@ -131,7 +148,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         for (Pair<String, GeoPoint[]> input : newData) {
             //Search for an existing entry for this ID
             boolean newDataEntry = true;
-            for (RouteListEntry e : data) {
+            for (RouteListEntry e : MapData.data) {
                 if (e.id.equals(input.first)) {
                     newDataEntry = false;
                     e.coords = input.second;
@@ -143,11 +160,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
             if (newDataEntry == true) {
                 // Not found -> Search for this ID in the users phone book
                 ContactInfo contact = new ContactInfo(this, input.first);
-                RouteListEntry e = new RouteListEntry(contact, colorGenerator.getNewColor(), false, input.second);
+                RouteListEntry e = new RouteListEntry(contact, MapData.colorGenerator.getNewColor(), false, input.second);
                 toAdd.add(e);
             }
             // Remove those entries which were not visited since these are old
-            for (RouteListEntry e : data) {
+            for (RouteListEntry e : MapData.data) {
                 if (visited.contains(e) == false) {
                     toRemove.add(e);
                 }
@@ -156,7 +173,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     }
    
     private void updateRoutes() {
-        for (RouteListEntry e : data) {
+        for (RouteListEntry e : MapData.data) {
             if (e.isChecked == true) {
                 drawRoute(e);
             } else {
@@ -166,9 +183,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         for (RouteListEntry e : toRemove) {
             removeRoute(e);
         }
-        data.removeAll(toRemove);
+        MapData.data.removeAll(toRemove);
         toRemove.clear();
-        data.addAll(toAdd);
+        MapData.data.addAll(toAdd);
         toAdd.clear();      
         map.invalidate();
     }
@@ -222,11 +239,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private void setupCustomRadioButton() {
         // Radiobutton Custom Events
         RadioButton customBtn = (RadioButton)findViewById(R.id.mapview_radio_custom);
-        customBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) lastActive = buttonView;
-            }
-        });
         customBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateDisabled = true;
@@ -238,14 +250,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private void setupFriendsRadioButton() {
         // Radiobutton Friends Events
         RadioButton friendsBtn = (RadioButton)findViewById(R.id.mapview_radio_friends);
-        friendsBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) lastActive = buttonView;
-            }
-        });
         friendsBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                for (RouteListEntry e : data) {
+                MapData.lastActive = v.getId();
+                System.out.println("Setting " + v + " to lastActive");
+                for (RouteListEntry e : MapData.data) {
                     if (e.isFriend == true) {
                         e.isChecked = true;
                     } else {
@@ -260,14 +269,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private void setupAllRadioButton() {
         // Radiobutton All Events
         RadioButton allBtn = (RadioButton)findViewById(R.id.mapview_radio_all);
-        allBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (!isChecked) lastActive = buttonView;
-            }
-        });
         allBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                for (RouteListEntry e : data) {
+                MapData.lastActive = v.getId();
+                System.out.println("Setting " + v + " to lastActive");
+                for (RouteListEntry e : MapData.data) {
                     e.isChecked = true;
                 }
                 updateRoutes();
@@ -278,7 +284,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private void setupMapView() {
         this.map = (MapView) findViewById(R.id.mapview_view_map);
         map.setBuiltInZoomControls(true);
-        map.getController().setCenter(new GeoPoint((int) (51.6998*1E6), (int) (5.485839*1E6)));
+        map.getController().setCenter(new GeoPoint((int) (51.6998*1E6), (int) (5.485839*1E6))); // TODO remove after testing
       }
     
     private void setupMyLocation() {
@@ -298,9 +304,10 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         switch(requestCode) {
         case SHOWROUTESREQUEST: if (resultCode == Activity.RESULT_OK) {
                                     updateRoutes();
-                                    lastActive = (RadioButton)findViewById(R.id.mapview_radio_custom);
+                                    MapData.lastActive = R.id.mapview_radio_custom;
+                                    System.out.println("Setting " + (RadioButton)findViewById(R.id.mapview_radio_custom) + " to lastActive");
                                 } else {
-                                    lastActive.setChecked(true);
+                                    ((RadioButton)findViewById(MapData.lastActive)).setChecked(true);
                                 }
                                 break;
         }
