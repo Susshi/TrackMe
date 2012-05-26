@@ -1,14 +1,11 @@
 package de.androidlab.trackme.activities;
 
-import de.androidlab.trackme.R;
-import de.androidlab.trackme.listeners.BackButtonListener;
-import de.androidlab.trackme.listeners.HomeButtonListener;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.widget.Button;
 import android.widget.TabHost;
+import de.androidlab.trackme.R;
 
 public class SettingsActivity extends TabActivity {
     

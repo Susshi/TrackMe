@@ -1,59 +1,29 @@
 package de.androidlab.trackme.activities;
 
-import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Paint;
+import android.os.Bundle;
+import android.util.Pair;
+import android.view.View;
+import android.widget.Button;
+import android.widget.RadioButton;
+
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
-import com.google.android.maps.Overlay;
-import com.google.android.maps.OverlayItem;
 
-import de.androidlab.trackme.map.ColorGenerator;
-import de.androidlab.trackme.map.ContactInfo;
-import de.androidlab.trackme.map.LineOverlay;
-import de.androidlab.trackme.map.RouteListEntry;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
-import android.app.Activity;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.ContentValues;
-import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds.Phone;
-import android.provider.ContactsContract.CommonDataKinds.StructuredName;
-import android.provider.ContactsContract.Contacts;
-import android.provider.ContactsContract.Data;
-import android.provider.ContactsContract.PhoneLookup;
-import android.provider.ContactsContract.RawContacts;
-import android.provider.ContactsContract.Settings;
-import android.util.Log;
-import android.util.Pair;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.PopupWindow;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.Toast;
-import android.widget.ZoomControls;
+import de.androidlab.trackme.map.ContactInfo;
+import de.androidlab.trackme.map.LineOverlay;
+import de.androidlab.trackme.map.RouteListEntry;
 
 public class MapActivity extends com.google.android.maps.MapActivity {
 	
@@ -253,7 +223,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         friendsBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 MapData.lastActive = v.getId();
-                System.out.println("Setting " + v + " to lastActive");
                 for (RouteListEntry e : MapData.data) {
                     if (e.isFriend == true) {
                         e.isChecked = true;
@@ -272,7 +241,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         allBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 MapData.lastActive = v.getId();
-                System.out.println("Setting " + v + " to lastActive");
                 for (RouteListEntry e : MapData.data) {
                     e.isChecked = true;
                 }
@@ -305,7 +273,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         case SHOWROUTESREQUEST: if (resultCode == Activity.RESULT_OK) {
                                     updateRoutes();
                                     MapData.lastActive = R.id.mapview_radio_custom;
-                                    System.out.println("Setting " + (RadioButton)findViewById(R.id.mapview_radio_custom) + " to lastActive");
                                 } else {
                                     ((RadioButton)findViewById(MapData.lastActive)).setChecked(true);
                                 }

@@ -1,11 +1,11 @@
 package de.androidlab.trackme.activities;
 
-import de.androidlab.trackme.R;
-import de.androidlab.trackme.listeners.BackButtonListener;
-import de.androidlab.trackme.listeners.HomeButtonListener;
 import android.app.Activity;
 import android.os.Bundle;
 import android.widget.Button;
+import de.androidlab.trackme.R;
+import de.androidlab.trackme.listeners.BackButtonListener;
+import de.androidlab.trackme.listeners.HomeButtonListener;
 
 public class CreditsActivity extends Activity {
     

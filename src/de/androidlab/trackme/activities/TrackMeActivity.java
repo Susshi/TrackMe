@@ -1,14 +1,12 @@
 package de.androidlab.trackme.activities;
 
-import de.androidlab.trackme.R;
-import de.androidlab.trackme.data.MapData;
-import de.androidlab.trackme.listeners.HomeButtonListener;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import de.androidlab.trackme.R;
+import de.androidlab.trackme.listeners.HomeButtonListener;
 
 public class TrackMeActivity extends Activity {
 
@@ -44,9 +42,6 @@ public class TrackMeActivity extends Activity {
         
         // Home Button Events
         Button homeBtn = (Button)findViewById(R.id.main_btn_home);             
-        homeBtn.setOnClickListener(new HomeButtonListener(this));
-        
-        // Init data
-        MapData mapdata = new MapData();          
+        homeBtn.setOnClickListener(new HomeButtonListener(this));         
     }
 }

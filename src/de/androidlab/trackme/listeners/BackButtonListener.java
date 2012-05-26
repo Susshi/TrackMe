@@ -1,9 +1,9 @@
 package de.androidlab.trackme.listeners;
 
-import de.androidlab.trackme.activities.TrackMeActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
+import de.androidlab.trackme.activities.TrackMeActivity;
 
 public class BackButtonListener implements View.OnClickListener {
 

@@ -1,12 +1,7 @@
 package de.androidlab.trackme.map;
 
-import java.util.Iterator;
-import java.util.List;
-
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
 import android.graphics.Point;
 
 import com.google.android.maps.GeoPoint;

@@ -1,22 +1,17 @@
 package de.androidlab.trackme.map;
 
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
-import de.androidlab.trackme.R;
-import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.provider.ContactsContract;
-import android.provider.ContactsContract.CommonDataKinds;
 import android.provider.ContactsContract.Contacts;
 import android.provider.ContactsContract.PhoneLookup;
 import android.util.Pair;
+import de.androidlab.trackme.R;
 
 public class ContactInfo {
     

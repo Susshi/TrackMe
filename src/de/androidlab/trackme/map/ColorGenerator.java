@@ -1,7 +1,6 @@
 package de.androidlab.trackme.map;
 
 import android.graphics.Color;
-import android.util.Log;
 
 public class ColorGenerator {
     

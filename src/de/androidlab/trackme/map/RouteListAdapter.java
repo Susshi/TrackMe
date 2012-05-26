@@ -1,19 +1,16 @@
 package de.androidlab.trackme.map;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import de.androidlab.trackme.R;
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.CheckBox;
+import de.androidlab.trackme.R;
 
 public class RouteListAdapter extends android.widget.ArrayAdapter<RouteListEntry> {
 
