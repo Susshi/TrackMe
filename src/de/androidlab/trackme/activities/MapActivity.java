@@ -87,12 +87,17 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     
     private void restoreOldData() {
         switch(MapData.lastActive) {
-        case R.id.mapview_radio_all: ((RadioButton)findViewById(R.id.mapview_radio_all)).performClick();
-                                     break;
+        case R.id.mapview_radio_all:     ((RadioButton)findViewById(R.id.mapview_radio_all)).performClick();
+                                         break;
+                                         
         case R.id.mapview_radio_friends: ((RadioButton)findViewById(R.id.mapview_radio_friends)).performClick();
                                          break;
-        case R.id.mapview_radio_custom: ((RadioButton)findViewById(R.id.mapview_radio_custom)).setChecked(true);
-                                        break;
+                                         
+        case R.id.mapview_radio_custom:  ((RadioButton)findViewById(R.id.mapview_radio_custom)).setChecked(true);
+                                         break;
+                                         
+        default:                         ((RadioButton)findViewById(MapData.defaultSetting)).performClick();
+                                         break;   
         }
     }
     
