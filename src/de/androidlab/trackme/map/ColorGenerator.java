@@ -10,6 +10,7 @@ public class ColorGenerator {
     private int[] colorList;
     private int posStart;
     private int posEnd;
+    private int posMid;
     private int alternating = 0;
     private double stepSize;
     
@@ -18,7 +19,8 @@ public class ColorGenerator {
 	    	stepSize = 360/count;
 	        colorList = new int[count];
 	        posStart = 0;
-	        posEnd = count/2;
+	        posMid = (count+1)/2;
+	        posEnd = posMid;
 	        for (int i = 0; i < count; i++) {
 	            colorList[i] = generateColor((float)(i*stepSize));
 	        }
@@ -26,7 +28,7 @@ public class ColorGenerator {
     }
     
     public int getNewColor() {
-        if (posStart <= posEnd) {
+        if (posStart < posMid && posEnd < colorList.length) {
             if ((alternating++%2) == 0) {
                 return colorList[posStart++];
             } else {
@@ -35,7 +37,8 @@ public class ColorGenerator {
         } else {
             generateNewColorList();
             posStart = 0;
-            posEnd = colorList.length/2;
+            posMid = (colorList.length+1)/2;
+            posEnd = posMid;
             return getNewColor();
         }
     }
