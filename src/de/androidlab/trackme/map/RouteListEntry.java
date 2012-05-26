@@ -14,7 +14,13 @@ public class RouteListEntry {
     public GeoPoint[] coords;
     public LineOverlay line;
     
-    public RouteListEntry(String id, Bitmap image, String name, int color, boolean isFriend, boolean checked, GeoPoint[] coords) {
+    public RouteListEntry(String id,
+                          Bitmap image,
+                          String name,
+                          int color,
+                          boolean isFriend,
+                          boolean checked,
+                          GeoPoint[] coords) {
         this.id = id;
     	this.image = image;
         this.name = name;
@@ -24,11 +30,24 @@ public class RouteListEntry {
         this.coords = coords;
     }
     
-    public RouteListEntry(ContactInfo contact, int color, boolean checked, GeoPoint[] coords) {
-        this(contact.number, contact.picture, contact.name, color, contact.isFriend, checked, coords);
+    public RouteListEntry(ContactInfo contact, 
+                          int color, 
+                          boolean checked, 
+                          GeoPoint[] coords) {
+        this(contact.number, 
+             contact.picture, 
+             contact.name, 
+             color, 
+             contact.isFriend, 
+             checked, coords);
     }
     
     public RouteListEntry(ContactInfo contact, int color) {
-        this(contact.number, contact.picture, contact.name, color, contact.isFriend, false, null);
+        this(contact.number, 
+             contact.picture,
+             contact.name, color, 
+             contact.isFriend, 
+             false, 
+             null);
     }
 }

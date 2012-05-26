@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.maps.GeoPoint;
@@ -95,17 +96,21 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
     private void restoreOldData() {
         switch(MapData.lastActive) {
-        case R.id.mapview_radio_all:     ((RadioButton)findViewById(R.id.mapview_radio_all)).performClick();
-                                         break;
+        case R.id.mapview_radio_all:     
+            ((RadioButton)findViewById(R.id.mapview_radio_all)).performClick();
+            break;
                                          
-        case R.id.mapview_radio_friends: ((RadioButton)findViewById(R.id.mapview_radio_friends)).performClick();
-                                         break;
+        case R.id.mapview_radio_friends: 
+            ((RadioButton)findViewById(R.id.mapview_radio_friends)).performClick();
+            break;
                                          
-        case R.id.mapview_radio_custom:  ((RadioButton)findViewById(R.id.mapview_radio_custom)).setChecked(true);
-                                         break;
+        case R.id.mapview_radio_custom:  
+            ((RadioButton)findViewById(R.id.mapview_radio_custom)).setChecked(true);
+            break;
                                          
-        default:                         ((RadioButton)findViewById(MapData.defaultSetting)).performClick();
-                                         break;   
+        default:                         
+            ((RadioButton)findViewById(MapData.defaultSetting)).performClick();
+           break;   
         }
     }
     
@@ -137,10 +142,8 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                     e.coords = input.second;
                     visited.add(e);
                     break;
-                    
                 }
             }
-            // TODO not everybody not in the phone book is a new entry (still bugged)
             if (newDataEntry == true) {
                 // Not found -> Search for this ID in the users phone book
                 ContactInfo contact = new ContactInfo(this, input.first);
@@ -150,7 +153,10 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                        && contact.isFriend == true)) {
                     checked = true;
                 }
-                RouteListEntry e = new RouteListEntry(contact, MapData.colorGenerator.getNewColor(), checked, input.second);
+                RouteListEntry e = new RouteListEntry(contact,
+                                                      MapData.colorGenerator.getNewColor(),
+                                                      checked,
+                                                      input.second);
                 toAdd.add(e);
             }
             // Remove those entries which were not visited since these are old
@@ -160,6 +166,10 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 }
             }
         }
+        Toast.makeText(this,
+                       toAdd.size() + " entries are new\n" +
+                       toRemove.size() + " entries are obsolete",
+                       Toast.LENGTH_SHORT).show();
     }
    
     private void updateRoutes() {
@@ -170,7 +180,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         toRemove.clear();
         
         MapData.data.addAll(toAdd);
-        toAdd.clear(); 
+        toAdd.clear();
         for (RouteListEntry e : MapData.data) {
             if (e.isChecked == true) {
                 drawRoute(e);
@@ -178,6 +188,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 removeRoute(e);
             }
         }
+        
         map.invalidate();
     }
 
@@ -232,7 +243,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         customBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 updateDisabled = true;
-                startActivityForResult(new Intent(MapActivity.this, RouteListActivity.class), SHOWROUTESREQUEST);
+                startActivityForResult(new Intent(MapActivity.this,
+                                                  RouteListActivity.class),
+                                                  SHOWROUTESREQUEST);
             }
         });    
     }
