@@ -76,11 +76,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                                                                    new GeoPoint((int) (39.605688*1E6), (int) (-3.610841*1E6))}));
 	}
 	// TODO Testdaten Ende
-    private final static int SHOWROUTESREQUEST = 0;
+    private final int SHOWROUTESREQUEST = 0;
     private CompoundButton lastActive;
     private MapView map;
     private MyLocationOverlay myLocationOverlay;
-    private ColorGenerator colorGenerator = new ColorGenerator(10);
+    private static ColorGenerator colorGenerator = new ColorGenerator(10);
     public static List<RouteListEntry> data = new ArrayList<RouteListEntry>();
     private List<RouteListEntry> toRemove = new LinkedList<RouteListEntry>();
     private List<RouteListEntry> toAdd = new LinkedList<RouteListEntry>();
@@ -91,7 +91,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapview);
-        
+
         // Home Button Events
         Button homeBtn = (Button)findViewById(R.id.mapview_btn_home);             
         homeBtn.setOnClickListener(new HomeButtonListener(this));
@@ -106,10 +106,10 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         
         setupMapView();
         setupMyLocation();
+        
     }
     
     private void update() {
-        System.out.println("UPDATE");
         updateData();
         updateRoutes();
     }
@@ -117,7 +117,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private void updateData() {
         // TODO call correct function instead of testdata
         Vector<Pair<String, GeoPoint[]>> newData = null;
-        switch(testCounter%3) {
+        switch(testCounter++%3) {
         case 0: newData = testInput1;
                 break;
         case 1: newData = testInput2;
@@ -127,6 +127,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         }
         toAdd.clear();
         toRemove.clear();
+        List<RouteListEntry> visited = new LinkedList<RouteListEntry>();
         for (Pair<String, GeoPoint[]> input : newData) {
             //Search for an existing entry for this ID
             boolean newDataEntry = true;
@@ -134,7 +135,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 if (e.id.equals(input.first)) {
                     newDataEntry = false;
                     e.coords = input.second;
+                    visited.add(e);
                     break;
+                    
                 }
             }
             if (newDataEntry == true) {
@@ -142,6 +145,12 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 ContactInfo contact = new ContactInfo(this, input.first);
                 RouteListEntry e = new RouteListEntry(contact, colorGenerator.getNewColor(), false, input.second);
                 toAdd.add(e);
+            }
+            // Remove those entries which were not visited since these are old
+            for (RouteListEntry e : data) {
+                if (visited.contains(e) == false) {
+                    toRemove.add(e);
+                }
             }
         }
     }
@@ -166,8 +175,8 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         removeRoute(e);
         Paint paint = new Paint();
         paint.setColor(e.color);
-        paint.setStrokeWidth(3);
-        paint.setAntiAlias(true);
+        paint.setStrokeWidth(3); // TODO Define in Settings
+        paint.setAntiAlias(true); // TODO Define in settings
         LineOverlay line = new LineOverlay(e.coords, paint, map.getProjection());
         map.getOverlays().add(line);
         e.line = line;
@@ -205,7 +214,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
     @Override
     protected boolean isRouteDisplayed() {
-        // TODO Auto-generated method stub
         return true;
     }
     
