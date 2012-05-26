@@ -1,6 +1,8 @@
 package de.androidlab.trackme.map;
 
+import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import de.androidlab.trackme.R;
 import android.app.Activity;
@@ -13,14 +15,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.CheckBox;
 
-public class RouteListAdapter extends ArrayAdapter<RouteListEntry> {
+public class RouteListAdapter extends android.widget.ArrayAdapter<RouteListEntry> {
 
     private Context context = null;
     private int layoutResourceID = -1;
-    private RouteListEntry[] entries = null;
+    private List<RouteListEntry> entries = null;
     
-    public RouteListAdapter(Context context, int layoutResourceID, RouteListEntry[] entries) {
-        super(context, layoutResourceID, entries);
+    public RouteListAdapter(Context context, int layoutResourceID, List<RouteListEntry> entries) {
+        super(context, layoutResourceID, entries.toArray(new RouteListEntry[entries.size()]));
         this.context = context;
         this.layoutResourceID = layoutResourceID;
         this.entries = entries;
@@ -34,8 +36,8 @@ public class RouteListAdapter extends ArrayAdapter<RouteListEntry> {
             LayoutInflater inflater = ((Activity)context).getLayoutInflater();
             row = inflater.inflate(layoutResourceID, null);
         }
-        RouteListEntry entry = entries[position];
-        ((ImageView)row.findViewById(R.id.routelist_entry_image)).setImageResource(entry.image);
+        RouteListEntry entry = entries.get(position);
+        ((ImageView)row.findViewById(R.id.routelist_entry_image)).setImageBitmap(entry.image);
         ((TextView)row.findViewById(R.id.routelist_entry_name)).setText(entry.name);
         ((CheckBox)row.findViewById(R.id.routelist_entry_checkbox)).setChecked(entry.isChecked);
         row.findViewById(R.id.routelist_root).setBackgroundColor(entry.color);
