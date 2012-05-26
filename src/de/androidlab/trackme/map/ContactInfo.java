@@ -39,11 +39,11 @@ public class ContactInfo {
             if (picture == null) {
                 picture = BitmapFactory.decodeResource(context.getResources(), anonymousPicture);
             }
-            isFriend = false;
+            isFriend = true;
         } else {
             this.name = "Anonymous" + anonymousCounter++;
             picture = BitmapFactory.decodeResource(context.getResources(), anonymousPicture);
-            isFriend = true;
+            isFriend = false;
         }
     }
     

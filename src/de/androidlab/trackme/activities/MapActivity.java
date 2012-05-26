@@ -159,6 +159,8 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         for (RouteListEntry e : data) {
             if (e.isChecked == true) {
                 drawRoute(e);
+            } else {
+                removeRoute(e);
             }
         }
         for (RouteListEntry e : toRemove) {
@@ -243,7 +245,14 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         });
         friendsBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // TODO
+                for (RouteListEntry e : data) {
+                    if (e.isFriend == true) {
+                        e.isChecked = true;
+                    } else {
+                        e.isChecked = false;
+                    }
+                }
+                updateRoutes();
             }
         });    
     }
@@ -258,7 +267,10 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         });
         allBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // TODO
+                for (RouteListEntry e : data) {
+                    e.isChecked = true;
+                }
+                updateRoutes();
             }
         });
     }
