@@ -1,5 +1,6 @@
 package de.androidlab.trackme.activities;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -10,8 +11,11 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -26,6 +30,8 @@ import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
 import de.androidlab.trackme.map.ContactInfo;
 import de.androidlab.trackme.map.LineOverlay;
+import de.androidlab.trackme.map.MapLegendListAdapter;
+import de.androidlab.trackme.map.RouteListAdapter;
 import de.androidlab.trackme.map.RouteListEntry;
 
 public class MapActivity extends com.google.android.maps.MapActivity {
@@ -56,6 +62,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private List<RouteListEntry> toRemove = new LinkedList<RouteListEntry>();
     private List<RouteListEntry> toAdd = new LinkedList<RouteListEntry>();
     private boolean updateDisabled = false;
+    private ListView legend;
     
     /** Called when the activity is first created. */
     @Override
@@ -74,8 +81,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         // Refresh Button
         setupRefreshButton();
         
-        // Toggle legend Button
+        // Toggle Buttons
         setupToggleLegendButton();
+        setupToggleSettingsButton();
         
         // Radio Buttons
         setupCustomRadioButton();
@@ -85,6 +93,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         // Map
         setupMapView();
         setupMyLocation();
+        setupMapLegend();
         
         // Update
         update();
@@ -92,6 +101,8 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         
         // Restore old state
         restoreOldData();
+        
+
     }
 
     private void restoreOldData() {
@@ -190,6 +201,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         }
         
         map.invalidate();
+        updateMapLegend();
     }
 
     private void drawRoute(RouteListEntry e) {
@@ -286,9 +298,23 @@ public class MapActivity extends com.google.android.maps.MapActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked == true) {
-                    // TODO show legend
+                    findViewById(R.id.mapview_legend).setVisibility(View.VISIBLE);
                 } else {
-                    // TODO hide legend
+                    findViewById(R.id.mapview_legend).setVisibility(View.GONE);
+                }
+            }
+        }); 
+    }
+    
+    private void setupToggleSettingsButton() {
+        ToggleButton settingsBtn = (ToggleButton)findViewById(R.id.mapview_btn_settings);
+        settingsBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked == true) {
+                    findViewById(R.id.mapview_settings).setVisibility(View.VISIBLE);
+                } else {
+                    findViewById(R.id.mapview_settings).setVisibility(View.GONE);
                 }
             }
         }); 
@@ -301,6 +327,29 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 update();
             }
         });
+    }
+    
+    private void setupMapLegend() {
+        legend = (ListView)findViewById(R.id.mapview_legend_list);
+        // Register Listeners
+        legend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO center on selected route
+            }
+        });
+        updateMapLegend();
+    }
+    
+    private void updateMapLegend() {
+        // TODO find a more efficient way to not display unchecked elements in legend
+        List<RouteListEntry> checkedOnly = new ArrayList<RouteListEntry>(MapData.data.size());
+        for (RouteListEntry e : MapData.data) {
+            if (e.isChecked == true) {
+                checkedOnly.add(e);
+            }
+        }
+        // Add Data to list
+        legend.setAdapter(new MapLegendListAdapter(this, R.layout.maplegend_entry, checkedOnly));
     }
     
     private void setupMapView() {

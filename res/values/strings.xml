@@ -11,7 +11,9 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="all">All</string>
-    <string name="friends">Friends only</string>
+    <string name="friends">Friends</string>
     <string name="custom">Custom</string>
+    <string name="follow">Follow own position</string>
+    <string name="show">Show</string>
 
 </resources>

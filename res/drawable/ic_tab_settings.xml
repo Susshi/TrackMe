@@ -3,6 +3,8 @@
     <!-- When selected, use selected -->
     <item android:drawable="@drawable/ic_tab_settings_selected"
           android:state_selected="true" />
+    <item android:drawable="@drawable/ic_tab_settings_selected"
+          android:state_checked="true" />
     <!-- When not selected, use unselected-->
     <item android:drawable="@drawable/ic_tab_settings_unselected" />
 </selector>
