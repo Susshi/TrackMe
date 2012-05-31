@@ -1,25 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/maplegend_root"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
-
+
     <ImageView
         android:id="@+id/maplegend_image"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
         android:src="@drawable/ic_launcher" />
-
+
     <TextView
         android:id="@+id/maplegend_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@+id/maplegend_image"
         android:text="Small Text"
-        android:textAppearance="?android:attr/textAppearanceSmall" android:textColor="#FFFFFF"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#FFFFFF" />
 
-</RelativeLayout>
+</LinearLayout>
