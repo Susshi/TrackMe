@@ -15,5 +15,8 @@
     <string name="custom">Custom</string>
     <string name="follow">Follow own position</string>
     <string name="show">Show</string>
+    <string name="types">Types</string>
+    <string name="traffic">Traffic</string>
+    <string name="sattelite">Sattelite</string>
 
 </resources>

@@ -84,11 +84,15 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         // Toggle Buttons
         setupToggleLegendButton();
         setupToggleSettingsButton();
+        setupToggleTrafficButton();
+        setupToggleSatteliteButton();
         
         // Radio Buttons
         setupCustomRadioButton();
         setupFriendsRadioButton();
         setupAllRadioButton();
+        
+
         
         // Map
         setupMapView();
@@ -292,10 +296,27 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         });
     }
     
+    private void setupToggleTrafficButton() {
+        ToggleButton trafficBtn = (ToggleButton)findViewById(R.id.mapview_btn_traffic);
+        trafficBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                map.setTraffic(isChecked);
+            }
+        }); 
+    }
+    
+    private void setupToggleSatteliteButton() {
+        ToggleButton satteliteBtn = (ToggleButton)findViewById(R.id.mapview_btn_sattelite);
+        satteliteBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                map.setSatellite(isChecked);
+            }
+        }); 
+    }
+    
     private void setupToggleLegendButton() {
         ToggleButton legendBtn = (ToggleButton)findViewById(R.id.mapview_btn_legend);
         legendBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked == true) {
                     findViewById(R.id.mapview_legend).setVisibility(View.VISIBLE);
@@ -309,7 +330,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private void setupToggleSettingsButton() {
         ToggleButton settingsBtn = (ToggleButton)findViewById(R.id.mapview_btn_settings);
         settingsBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked == true) {
                     findViewById(R.id.mapview_settings).setVisibility(View.VISIBLE);

@@ -21,14 +21,17 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:text="@string/empty" android:clickable="false"/>
-
+
     <TextView
         android:id="@+id/routelist_entry_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/routelist_entry_image"
+        android:ellipsize="end"
         android:gravity="center"
+        android:lines="1"
+        android:scrollHorizontally="true"
         android:text="Large Text"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
