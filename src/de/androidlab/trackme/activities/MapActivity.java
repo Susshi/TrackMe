@@ -349,7 +349,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
             }
         }
         // Add Data to list
-        legend.setAdapter(new MapLegendListAdapter(this, R.layout.maplegend_entry, checkedOnly));
+        legend.setAdapter(new MapLegendListAdapter(this, R.layout.maplegend_entry, map, checkedOnly));
     }
     
     private void setupMapView() {
