@@ -21,13 +21,13 @@ public class SettingsActivity extends TabActivity {
         
         // ----- General Tab -----
         TabHost.TabSpec general = tabHost.newTabSpec("tab1");
-        general.setIndicator("General", res.getDrawable(R.drawable.ic_tab_settings));
+        general.setIndicator("General", res.getDrawable(R.drawable.ic_menu_settings));
         general.setContent(new Intent(SettingsActivity.this, SettingsGeneralTabActivity.class));
         tabHost.addTab(general);      
 
         // ----- Privacy Tab -----
         TabHost.TabSpec privacy = tabHost.newTabSpec("tab2");
-        privacy.setIndicator("Privacy", res.getDrawable(R.drawable.ic_tab_privacy));
+        privacy.setIndicator("Privacy", res.getDrawable(R.drawable.ic_menu_privacy));
         privacy.setContent(new Intent(SettingsActivity.this, SettingsPrivacyTabActivity.class));
         tabHost.addTab(privacy);
 

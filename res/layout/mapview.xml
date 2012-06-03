@@ -34,29 +34,30 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         layout="@layout/mapview_settings" />
-
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:gravity="center" >
-
-        <Button
-            android:id="@+id/mapview_btn_refresh"
+
+        <ToggleButton
+            android:id="@+id/mapview_btn_legend"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="@drawable/ic_menu_refresh"
-            android:text="@string/empty" />
-
-        <Button
-            android:id="@+id/mapview_btn_placeholder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="@drawable/ic_menu_placeholder"
+            android:background="@drawable/ic_menu_legend"
             android:text="@string/empty"
-            android:visibility="invisible" />
+            android:textOff=" "
+            android:textOn=" " />
+
+        <ToggleButton
+            android:id="@+id/mapview_btn_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_menu_settings"
+            android:text="@string/empty"
+            android:textOff=" "
+            android:textOn=" "/>
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -81,25 +82,22 @@
                 android:text="@string/empty" />
         </LinearLayout>
 
-        <ToggleButton
-            android:id="@+id/mapview_btn_settings"
+        <Button
+            android:id="@+id/mapview_btn_placeholder"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="@drawable/ic_tab_settings"
+            android:background="@drawable/ic_menu_placeholder"
             android:text="@string/empty"
-            android:textOff=" "
-            android:textOn=" " />
+            android:visibility="invisible" />
 
-        <ToggleButton
-            android:id="@+id/mapview_btn_legend"
+        <Button
+            android:id="@+id/mapview_btn_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0"
-            android:background="@drawable/ic_tab_legend"
-            android:text="ToggleButton"
-            android:textOff=" "
-            android:textOn=" " />
+            android:background="@drawable/ic_menu_refresh"
+            android:text="@string/empty" />
     </LinearLayout>
 
 </LinearLayout>
