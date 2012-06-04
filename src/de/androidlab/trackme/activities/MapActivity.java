@@ -92,6 +92,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         setupFriendsRadioButton();
         setupAllRadioButton();
         
+        // Checkboxes
+        setupFollowCheckbox();
+        
 
         
         // Map
@@ -127,6 +130,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
             ((RadioButton)findViewById(MapData.defaultSetting)).performClick();
            break;   
         }
+        
+        map.setTraffic(MapData.traffic);
+        map.setSatellite(MapData.sattelite);
     }
     
     private void update() {
@@ -238,15 +244,21 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     @Override
     public void onResume() {
       super.onResume();
-      myLocationOverlay.enableMyLocation();
-      myLocationOverlay.enableCompass();
+      System.out.println("Following is " + MapData.followActive);
+      if (MapData.followActive == true) {
+          myLocationOverlay.enableMyLocation();
+          myLocationOverlay.enableCompass();
+      }
     }
     
     @Override
     protected void onPause() {
       super.onPause();
-      myLocationOverlay.disableCompass();
-      myLocationOverlay.disableMyLocation();
+      System.out.println("Following is " + MapData.followActive);
+      if (MapData.followActive == true) {
+          myLocationOverlay.disableCompass();
+          myLocationOverlay.disableMyLocation();
+      }
     }
 
     @Override
@@ -292,6 +304,23 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                     e.isChecked = true;
                 }
                 updateRoutes();
+            }
+        });
+    }
+    
+    private void setupFollowCheckbox() {
+        CheckBox followBox = (CheckBox)findViewById(R.id.mapview_checkbox_follow);
+        followBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                MapData.followActive = isChecked;
+                System.out.println("Following is " + MapData.followActive);
+                if (isChecked == true) {
+                    myLocationOverlay.enableMyLocation();
+                    myLocationOverlay.enableCompass(); 
+                } else {
+                    myLocationOverlay.disableMyLocation();
+                    myLocationOverlay.disableCompass();    
+                }
             }
         });
     }
@@ -351,12 +380,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     
     private void setupMapLegend() {
         legend = (ListView)findViewById(R.id.mapview_legend_list);
-        // Register Listeners
-        legend.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO center on selected route
-            }
-        });
         updateMapLegend();
     }
     
@@ -382,11 +405,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         this.myLocationOverlay = new MyLocationOverlay(this, map);
         myLocationOverlay.enableMyLocation();
         myLocationOverlay.runOnFirstFix(new Runnable() {
-          @Override
           public void run() {
             GeoPoint currentLocation = myLocationOverlay.getMyLocation();
             map.getController().animateTo(currentLocation);
             map.getOverlays().add(myLocationOverlay);
+            System.out.println("Following is " + MapData.followActive);
           }
         });
       }

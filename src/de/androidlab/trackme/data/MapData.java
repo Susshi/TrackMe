@@ -12,4 +12,8 @@ public class MapData {
     public static ColorGenerator colorGenerator = new ColorGenerator(10);
     public static List<RouteListEntry> data = new ArrayList<RouteListEntry>();
     public static int defaultSetting = R.id.mapview_radio_friends;
+    public static boolean traffic;
+    public static boolean sattelite;
+    public static boolean followActive;
+    public static boolean defaultFollow;
 }
