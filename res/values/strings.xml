@@ -17,6 +17,10 @@
     <string name="show">Show</string>
     <string name="types">Types</string>
     <string name="traffic">Traffic</string>
-    <string name="sattelite">Sattelite</string>
+    <string name="sattelite">Satellite</string>
+    <string name="defaultSettings">Default settings</string>
+    <string name="update">Update automatically</string>
+    <string name="antialiasing">Antialiasing</string>
+    <string name="strokewidth">Stroke width</string>
 
 </resources>

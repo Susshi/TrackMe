@@ -30,6 +30,7 @@
         <activity android:name=".activities.SettingsPrivacyTabActivity"></activity>
         <activity android:name=".activities.RouteListActivity"></activity>
         <uses-library android:name="com.google.android.maps" android:required="true"/>
+        <activity android:name=".activities.SettingsMapTabActivity"></activity>
         
     </application>
 

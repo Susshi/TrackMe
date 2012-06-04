@@ -30,6 +30,12 @@ public class SettingsActivity extends TabActivity {
         privacy.setIndicator("Privacy", res.getDrawable(R.drawable.ic_menu_privacy));
         privacy.setContent(new Intent(SettingsActivity.this, SettingsPrivacyTabActivity.class));
         tabHost.addTab(privacy);
+        
+        // ----- Map Tab -----
+        TabHost.TabSpec map = tabHost.newTabSpec("tab3");
+        map.setIndicator("Map", res.getDrawable(R.drawable.ic_menu_map));
+        map.setContent(new Intent(SettingsActivity.this, SettingsMapTabActivity.class));
+        tabHost.addTab(map);
 
         // Set active tab
         tabHost.setCurrentTab(0);

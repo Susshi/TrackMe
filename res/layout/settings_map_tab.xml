@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settings_privacy_tab"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/ScrollView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/defaultSettings"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <RadioGroup
+                android:id="@+id/RadioGroup01"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <TextView
+                    android:id="@+id/TextView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/show"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <RadioButton
+                    android:id="@+id/settings_map_radio_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:checked="true"
+                    android:text="@string/all" />
+
+                <RadioButton
+                    android:id="@+id/settings_map_radio_friends"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/friends" />
+            </RadioGroup>
+
+            <CheckBox
+                android:id="@+id/settings_map_checkbox_follow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/follow" />
+
+            <CheckBox
+                android:id="@+id/settings_map_checkbox_update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/update" />
+
+            <CheckBox
+                android:id="@+id/settings_map_checkbox_satellite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sattelite" />
+
+            <CheckBox
+                android:id="@+id/settings_map_checkbox_traffic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/traffic" />
+
+            <CheckBox
+                android:id="@+id/settings_map_checkbox_antialiasing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/antialiasing" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" >
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/strokewidth"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <EditText
+                    android:id="@+id/settings_map_edit_strokewidth"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:width="100dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.0"
+        android:gravity="center" >
+
+        <Button
+            android:id="@+id/settings_map_btn_home"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_menu_home"
+            android:text="@string/empty" />
+
+        <Button
+            android:id="@+id/settings_map_btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_menu_back"
+            android:text="@string/empty" />
+    </LinearLayout>
+
+</LinearLayout>
