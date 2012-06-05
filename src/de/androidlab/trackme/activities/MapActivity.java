@@ -244,7 +244,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     @Override
     public void onResume() {
       super.onResume();
-      System.out.println("Following is " + MapData.followActive);
       if (MapData.followActive == true) {
           myLocationOverlay.enableMyLocation();
           myLocationOverlay.enableCompass();
@@ -254,7 +253,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     @Override
     protected void onPause() {
       super.onPause();
-      System.out.println("Following is " + MapData.followActive);
       if (MapData.followActive == true) {
           myLocationOverlay.disableCompass();
           myLocationOverlay.disableMyLocation();
@@ -313,7 +311,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         followBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MapData.followActive = isChecked;
-                System.out.println("Following is " + MapData.followActive);
                 if (isChecked == true) {
                     myLocationOverlay.enableMyLocation();
                     myLocationOverlay.enableCompass(); 
@@ -409,7 +406,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
             GeoPoint currentLocation = myLocationOverlay.getMyLocation();
             map.getController().animateTo(currentLocation);
             map.getOverlays().add(myLocationOverlay);
-            System.out.println("Following is " + MapData.followActive);
           }
         });
       }

@@ -50,7 +50,6 @@ public class SettingsMapTabActivity extends Activity {
                 if (actionId == EditorInfo.IME_ACTION_DONE
                     || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
                     MapData.defaultStrokeWidth = Integer.parseInt(((EditText)v).getText().toString());
-                    System.out.println("Test"); 
                 }
                 return false;
             }
@@ -129,5 +128,10 @@ public class SettingsMapTabActivity extends Activity {
                 MapData.defaultSetting = R.id.mapview_radio_all;
             }
         });
+    }
+    
+    protected void onPause() {
+        super.onPause();
+        MapData.storeInPreferences(getPreferences(0).edit());
     }
 }

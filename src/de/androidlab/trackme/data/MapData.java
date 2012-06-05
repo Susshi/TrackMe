@@ -3,6 +3,8 @@ package de.androidlab.trackme.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.SharedPreferences;
+
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.map.ColorGenerator;
 import de.androidlab.trackme.map.RouteListEntry;
@@ -23,4 +25,25 @@ public class MapData {
     public static boolean defaultSatellite = false;
     public static boolean defaultTraffic = false;
     public static int defaultSetting = R.id.mapview_radio_friends;
+    
+    public static void storeInPreferences(SharedPreferences.Editor pref) {
+        pref.putBoolean("default_update", defaultUpdate);
+        pref.putBoolean("default_follow", defaultFollow);
+        pref.putBoolean("default_antialiasing", defaultAntialiasing);
+        pref.putBoolean("default_satellite", defaultSatellite);
+        pref.putBoolean("default_traffic", defaultTraffic);
+        pref.putInt("default_stroke_width", defaultStrokeWidth);
+        pref.putInt("default_setting", defaultSetting);
+        pref.commit();
+    }
+    
+    public static void restoreFromPreferences(SharedPreferences pref) {
+        defaultUpdate = pref.getBoolean("default_update", defaultUpdate);
+        defaultFollow = pref.getBoolean("default_follow", defaultFollow);
+        defaultAntialiasing = pref.getBoolean("default_antialiasing", defaultAntialiasing);
+        defaultSatellite = pref.getBoolean("default_satellite", defaultSatellite);
+        defaultTraffic = pref.getBoolean("default_traffic", defaultTraffic);
+        defaultStrokeWidth = pref.getInt("default_stroke_width", defaultStrokeWidth);
+        defaultSetting = pref.getInt("default_setting", defaultSetting);
+    }
 }
