@@ -95,20 +95,20 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         // Checkboxes
         setupFollowCheckbox();
         
-
-        
         // Map
         setupMapView();
         setupMyLocation();
         setupMapLegend();
         
-        // Update
-        update();
-        updateDisabled = true;
+        // Update Data only, Routes are updated after the state is restored 
+        updateData();
         
         // Restore old state
         restoreOldData();
         
+        // Update Routes
+        updateRoutes();
+        updateDisabled = true;   
 
     }
 
@@ -131,13 +131,31 @@ public class MapActivity extends com.google.android.maps.MapActivity {
            break;   
         }
         
-        map.setTraffic(MapData.traffic);
-        map.setSatellite(MapData.sattelite);
+        if (MapData.traffic == true) {
+            ((ToggleButton)findViewById(R.id.mapview_btn_traffic)).setChecked(true);
+            map.setTraffic(true);
+        }
+        if (MapData.satellite == true) {
+            ((ToggleButton)findViewById(R.id.mapview_btn_sattelite)).setChecked(true);
+            map.setSatellite(true);
+        }
+        if (MapData.followActive == true) {
+            ((CheckBox)findViewById(R.id.mapview_checkbox_follow)).setChecked(true);
+        }
+    }
+    
+    private void update(boolean byAuto) {
+        if (byAuto == false || MapData.defaultUpdate == true) {
+            if (updateDisabled == false) {
+                updateData();
+                updateRoutes();
+            }
+        }
+        updateDisabled = false;
     }
     
     private void update() {
-        updateData();
-        updateRoutes();
+        update(false);
     }
     
     private void updateData() {
@@ -218,8 +236,8 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         removeRoute(e);
         Paint paint = new Paint();
         paint.setColor(e.color);
-        paint.setStrokeWidth(3); // TODO Define in Settings
-        paint.setAntiAlias(true); // TODO Define in settings
+        paint.setStrokeWidth(MapData.defaultStrokeWidth);
+        paint.setAntiAlias(MapData.defaultAntialiasing);
         LineOverlay line = new LineOverlay(e.coords, paint, map.getProjection());
         map.getOverlays().add(line);
         e.line = line;
@@ -234,11 +252,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 
     public void onStart() {
         super.onStart();
-        if (!updateDisabled) {
-            update();
-        } else {
-            updateDisabled = false;
-        }
+        update(true);
     }
     
     @Override
@@ -307,7 +321,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     }
     
     private void setupFollowCheckbox() {
-        CheckBox followBox = (CheckBox)findViewById(R.id.mapview_checkbox_follow);
+        CheckBox followBox = (CheckBox)findViewById(R.id.mapview_checkbox_follow);    
         followBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MapData.followActive = isChecked;
@@ -326,6 +340,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         ToggleButton trafficBtn = (ToggleButton)findViewById(R.id.mapview_btn_traffic);
         trafficBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                MapData.traffic = isChecked;
                 map.setTraffic(isChecked);
             }
         }); 
@@ -335,6 +350,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         ToggleButton satteliteBtn = (ToggleButton)findViewById(R.id.mapview_btn_sattelite);
         satteliteBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                MapData.satellite = isChecked;
                 map.setSatellite(isChecked);
             }
         }); 

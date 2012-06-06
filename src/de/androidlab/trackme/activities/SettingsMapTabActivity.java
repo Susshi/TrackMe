@@ -40,6 +40,8 @@ public class SettingsMapTabActivity extends Activity {
         setupSatellite();
         setupAntialiasing();
         setupStrokeWidth();
+        
+        System.out.println("Created");
     }
 
     private void setupStrokeWidth() {
@@ -132,6 +134,7 @@ public class SettingsMapTabActivity extends Activity {
     
     protected void onPause() {
         super.onPause();
-        MapData.storeInPreferences(getPreferences(0).edit());
+        MapData.storeInPreferences(getSharedPreferences("TrackMeActivity", 0).edit());
+        System.out.println("Saved");
     }
 }

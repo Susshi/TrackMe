@@ -49,7 +49,9 @@ public class TrackMeActivity extends Activity {
         homeBtn.setOnClickListener(new HomeButtonListener(this));
         
         
-        MapData.restoreFromPreferences(getPreferences(0));
+        MapData.restoreFromPreferences(getSharedPreferences("TrackMeActivity", 0));
+        
+        System.out.println("created Main");
     }
 
 }
