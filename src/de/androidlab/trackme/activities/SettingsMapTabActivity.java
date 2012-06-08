@@ -50,7 +50,7 @@ public class SettingsMapTabActivity extends Activity {
         editStroke.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE
-                    || event.getKeyCode() == KeyEvent.KEYCODE_ENTER) {
+                    || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                     MapData.defaultStrokeWidth = Integer.parseInt(((EditText)v).getText().toString());
                 }
                 return false;
