@@ -46,7 +46,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 		testInput1.add(new Pair<String, GeoPoint[]>("01601111111", 
 		                                            new GeoPoint[]{new GeoPoint((int) (51.206883*1E6),(int) (10.319823*1E6)),
 		                                                           new GeoPoint((int) (55.028022*1E6), (int) (-2.907716*1E6))}));
-		// Irland nach Dänemark
+		// Irland nach Dï¿½nemark
         testInput2.add(new Pair<String, GeoPoint[]>("01602222222", 
                                                     new GeoPoint[]{new GeoPoint((int) (53.225768*1E6),(int) (-8.093263*1E6)),
                                                                    new GeoPoint((int) (55.429013*1E6), (int) (9.265136*1E6))}));
@@ -101,7 +101,9 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         setupMapLegend();
         
         // Update Data only, Routes are updated after the state is restored 
-        updateData();
+        if (MapData.defaultUpdate == true) {
+        	updateData();
+        }
         
         // Restore old state
         restoreOldData();
