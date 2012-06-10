@@ -42,18 +42,27 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 	private static Vector<Pair<String, GeoPoint[]>> testInput3 = new Vector<Pair<String, GeoPoint[]>>();
 	private static int testCounter = 3;
 	static {
-	    // Deutschland nach England
-		testInput1.add(new Pair<String, GeoPoint[]>("01601111111", 
+		testInput1.add(new Pair<String, GeoPoint[]>("1", 
 		                                            new GeoPoint[]{new GeoPoint((int) (51.206883*1E6),(int) (10.319823*1E6)),
 		                                                           new GeoPoint((int) (55.028022*1E6), (int) (-2.907716*1E6))}));
-		// Irland nach D�nemark
-        testInput2.add(new Pair<String, GeoPoint[]>("01602222222", 
+        testInput1.add(new Pair<String, GeoPoint[]>("2", 
                                                     new GeoPoint[]{new GeoPoint((int) (53.225768*1E6),(int) (-8.093263*1E6)),
                                                                    new GeoPoint((int) (55.429013*1E6), (int) (9.265136*1E6))}));
-        // Frankreich nach Spanien
-        testInput3.add(new Pair<String, GeoPoint[]>("01603333333", 
+        testInput1.add(new Pair<String, GeoPoint[]>("3", 
                                                     new GeoPoint[]{new GeoPoint((int) (46.589069*1E6),(int) (2.365722*1E6)),
                                                                    new GeoPoint((int) (39.605688*1E6), (int) (-3.610841*1E6))}));
+        
+        testInput2.add(new Pair<String, GeoPoint[]>("1", 
+                                                    new GeoPoint[]{new GeoPoint((int) (51.206883*1E6),(int) (10.319823*1E6)),
+                                                                   new GeoPoint((int) (55.028022*1E6), (int) (-2.907716*1E6)),
+                                                                   new GeoPoint((int) (60.028022*1E6), (int) (-7.907716*1E6)),}));
+        testInput2.add(new Pair<String, GeoPoint[]>("3", 
+                                                    new GeoPoint[]{new GeoPoint((int) (53.225768*1E6),(int) (-8.093263*1E6)),
+                                                                   new GeoPoint((int) (55.429013*1E6), (int) (9.265136*1E6))}));
+        testInput2.add(new Pair<String, GeoPoint[]>("4", 
+                                                    new GeoPoint[]{new GeoPoint((int) (46.589069*1E6),(int) (2.365722*1E6)),
+                                                                   new GeoPoint((int) (39.605688*1E6), (int) (-3.610841*1E6)),
+                                                                   new GeoPoint((int) (35.605688*1E6), (int) (3.610841*1E6))}));
 	}
 	// TODO Testdaten Ende
     private final int SHOWROUTESREQUEST = 0;
@@ -200,13 +209,15 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                                                       input.second);
                 toAdd.add(e);
             }
-            // Remove those entries which were not visited since these are old
-            for (RouteListEntry e : MapData.data) {
-                if (visited.contains(e) == false) {
-                    toRemove.add(e);
-                }
+        }
+        
+        // Remove those entries which were not visited since these are old
+        for (RouteListEntry e : MapData.data) {
+            if (visited.contains(e) == false) {
+                toRemove.add(e);
             }
         }
+        
         Toast.makeText(this,
                        toAdd.size() + " entries are new\n" +
                        toRemove.size() + " entries are obsolete",
