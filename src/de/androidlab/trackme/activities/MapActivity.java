@@ -412,11 +412,17 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private void updateMapLegend() {
         // TODO find a more efficient way to not display unchecked elements in legend
         List<RouteListEntry> checkedOnly = new ArrayList<RouteListEntry>(MapData.data.size());
+        List<RouteListEntry> anonymous = new ArrayList<RouteListEntry>(MapData.data.size());
         for (RouteListEntry e : MapData.data) {
             if (e.isChecked == true) {
-                checkedOnly.add(e);
+                if (e.isFriend == true) {
+                    checkedOnly.add(e);
+                } else {
+                    anonymous.add(e);
+                }
             }
         }
+        checkedOnly.addAll(anonymous);
         // Add Data to list
         legend.setAdapter(new MapLegendListAdapter(this, R.layout.maplegend_entry, map, checkedOnly));
     }
