@@ -114,12 +114,14 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         	updateData();
         }
         
+        System.out.println("Last Active was " + MapData.lastActive);
+        
         // Restore old state
         restoreOldData();
         
         // Update Routes
         updateRoutes();
-        updateDisabled = true;   
+        updateDisabled = true;
 
     }
 
@@ -139,7 +141,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                                          
         default:                         
             ((RadioButton)findViewById(MapData.defaultSetting)).performClick();
-           break;   
+            break;   
         }
         
         if (MapData.traffic == true) {
@@ -198,8 +200,8 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 // Not found -> Search for this ID in the users phone book
                 ContactInfo contact = new ContactInfo(this, input.first);
                 boolean checked = false;
-                if (((RadioButton)findViewById(R.id.mapview_radio_all)).isChecked()
-                    || (((RadioButton)findViewById(R.id.mapview_radio_friends)).isChecked()
+                if (MapData.lastActive == R.id.mapview_radio_all
+                    || (MapData.lastActive == R.id.mapview_radio_friends
                        && contact.isFriend == true)) {
                     checked = true;
                 }
