@@ -1,5 +1,8 @@
 package de.androidlab.trackme.activities;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.ListActivity;
 import android.os.Bundle;
@@ -50,7 +53,17 @@ public class RouteListActivity extends ListActivity {
         ListView lv = getListView();
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         // Add Data to list
-        lv.setAdapter(new RouteListAdapter(this, R.layout.routelist_entry, MapData.data));
+        List<RouteListEntry> sorted = new ArrayList<RouteListEntry>(MapData.data.size());
+        List<RouteListEntry> anonymous = new ArrayList<RouteListEntry>(MapData.data.size());
+        for (RouteListEntry e : MapData.data) {
+            if (e.isFriend == true) {
+                sorted.add(e);
+            } else {
+                anonymous.add(e);
+            }
+        }
+        sorted.addAll(anonymous);
+        lv.setAdapter(new RouteListAdapter(this, R.layout.routelist_entry, sorted));
         // Register Listeners
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
