@@ -1,14 +1,17 @@
 package de.androidlab.trackme.map;
 
+import java.util.List;
+
 import android.graphics.Bitmap;
-import android.util.Pair;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 
+import de.androidlab.trackme.data.ContactInfo;
+
 public class RouteListEntry {
-    public String id;
+    public List<String> ids;
 	public Bitmap image;
     public String name;
     public int color;
@@ -17,14 +20,14 @@ public class RouteListEntry {
     public GeoPoint[] coords;
     public LineOverlay line;
     
-    public RouteListEntry(String id,
+    public RouteListEntry(List<String> ids,
                           Bitmap image,
                           String name,
                           int color,
                           boolean isFriend,
                           boolean checked,
                           GeoPoint[] coords) {
-        this.id = id;
+        this.ids = ids;
     	this.image = image;
         this.name = name;
         this.color = color;
@@ -33,23 +36,24 @@ public class RouteListEntry {
         this.coords = coords;
     }
     
-    public RouteListEntry(ContactInfo contact, 
+    public RouteListEntry(ContactInfo contact,
                           int color, 
+                          boolean isFriend,
                           boolean checked, 
                           GeoPoint[] coords) {
-        this(contact.number, 
+        this(contact.numbers, 
              contact.picture, 
              contact.name, 
              color, 
-             contact.isFriend, 
-             checked, coords);
+             isFriend, 
+             checked,
+             coords);
     }
     
-    public RouteListEntry(ContactInfo contact, int color) {
-        this(contact.number, 
-             contact.picture,
-             contact.name, color, 
-             contact.isFriend, 
+    public RouteListEntry(ContactInfo contact, int color, boolean isFriend) {
+        this(contact,
+             color, 
+             isFriend, 
              false, 
              null);
     }

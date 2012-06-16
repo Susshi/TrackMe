@@ -3,7 +3,6 @@ package de.androidlab.trackme.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
@@ -14,8 +13,6 @@ import de.androidlab.trackme.listeners.HomeButtonListener;
 import de.androidlab.trackme.listeners.TrackMeLocationListener;
 
 public class TrackMeActivity extends Activity {
-    
-    private SharedPreferences preferences;
 
     /** Called when the activity is first created. */
     @Override
@@ -52,15 +49,13 @@ public class TrackMeActivity extends Activity {
         homeBtn.setOnClickListener(new HomeButtonListener(this));
         
         
-        MapData.restoreFromPreferences(getSharedPreferences("TrackMeActivity", 0));
+        MapData.init(this, getSharedPreferences("TrackMeActivity", 0));
         
         // Setup location callbacks
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         TrackMeLocationListener locationListener = new TrackMeLocationListener();
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        
-        System.out.println("created Main");
     }
 
 }

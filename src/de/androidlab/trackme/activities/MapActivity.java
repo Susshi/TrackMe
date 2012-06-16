@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -25,13 +24,12 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 
 import de.androidlab.trackme.R;
+import de.androidlab.trackme.data.ContactInfo;
 import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
-import de.androidlab.trackme.map.ContactInfo;
 import de.androidlab.trackme.map.LineOverlay;
 import de.androidlab.trackme.map.MapLegendListAdapter;
-import de.androidlab.trackme.map.RouteListAdapter;
 import de.androidlab.trackme.map.RouteListEntry;
 
 public class MapActivity extends com.google.android.maps.MapActivity {
@@ -42,24 +40,24 @@ public class MapActivity extends com.google.android.maps.MapActivity {
 	private static Vector<Pair<String, GeoPoint[]>> testInput3 = new Vector<Pair<String, GeoPoint[]>>();
 	private static int testCounter = 3;
 	static {
-		testInput1.add(new Pair<String, GeoPoint[]>("1", 
+		testInput1.add(new Pair<String, GeoPoint[]>("ddfe163345d338193ac2bdc183f8e9dcff904b43", // Hash of 01
 		                                            new GeoPoint[]{new GeoPoint((int) (51.206883*1E6),(int) (10.319823*1E6)),
 		                                                           new GeoPoint((int) (55.028022*1E6), (int) (-2.907716*1E6))}));
-        testInput1.add(new Pair<String, GeoPoint[]>("2", 
+        testInput1.add(new Pair<String, GeoPoint[]>("bcac9d1d8eab3713ae489224d0130c9468e7a0e3", // Hash of 02
                                                     new GeoPoint[]{new GeoPoint((int) (53.225768*1E6),(int) (-8.093263*1E6)),
                                                                    new GeoPoint((int) (55.429013*1E6), (int) (9.265136*1E6))}));
-        testInput1.add(new Pair<String, GeoPoint[]>("3", 
+        testInput1.add(new Pair<String, GeoPoint[]>("3ea6c91e241f256e5e3a88ebd647372022323a53", // Hash of 03
                                                     new GeoPoint[]{new GeoPoint((int) (46.589069*1E6),(int) (2.365722*1E6)),
                                                                    new GeoPoint((int) (39.605688*1E6), (int) (-3.610841*1E6))}));
         
-        testInput2.add(new Pair<String, GeoPoint[]>("1", 
+        testInput2.add(new Pair<String, GeoPoint[]>("ddfe163345d338193ac2bdc183f8e9dcff904b43", // Hash of 01
                                                     new GeoPoint[]{new GeoPoint((int) (51.206883*1E6),(int) (10.319823*1E6)),
                                                                    new GeoPoint((int) (55.028022*1E6), (int) (-2.907716*1E6)),
                                                                    new GeoPoint((int) (60.028022*1E6), (int) (-7.907716*1E6)),}));
-        testInput2.add(new Pair<String, GeoPoint[]>("3", 
+        testInput2.add(new Pair<String, GeoPoint[]>("3ea6c91e241f256e5e3a88ebd647372022323a53", // Hash of 03
                                                     new GeoPoint[]{new GeoPoint((int) (53.225768*1E6),(int) (-8.093263*1E6)),
                                                                    new GeoPoint((int) (55.429013*1E6), (int) (9.265136*1E6))}));
-        testInput2.add(new Pair<String, GeoPoint[]>("4", 
+        testInput2.add(new Pair<String, GeoPoint[]>("798f861ee74f6ff83ccbc9c53b419941d0080e50", // Hash of 04
                                                     new GeoPoint[]{new GeoPoint((int) (46.589069*1E6),(int) (2.365722*1E6)),
                                                                    new GeoPoint((int) (39.605688*1E6), (int) (-3.610841*1E6)),
                                                                    new GeoPoint((int) (35.605688*1E6), (int) (3.610841*1E6))}));
@@ -113,8 +111,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         if (MapData.defaultUpdate == true) {
         	updateData();
         }
-        
-        System.out.println("Last Active was " + MapData.lastActive);
         
         // Restore old state
         restoreOldData();
@@ -189,7 +185,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
             //Search for an existing entry for this ID
             boolean newDataEntry = true;
             for (RouteListEntry e : MapData.data) {
-                if (e.id.equals(input.first)) {
+                if (e.ids.contains(input.first)) {
                     newDataEntry = false;
                     e.coords = input.second;
                     visited.add(e);
@@ -197,16 +193,22 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                 }
             }
             if (newDataEntry == true) {
-                // Not found -> Search for this ID in the users phone book
-                ContactInfo contact = new ContactInfo(this, input.first);
+                // Not found -> Search for this ID in HashedIdentification
+                ContactInfo contact = MapData.contacts.getContactInfo(input.first);
                 boolean checked = false;
+                boolean isFriend = true;
                 if (MapData.lastActive == R.id.mapview_radio_all
                     || (MapData.lastActive == R.id.mapview_radio_friends
-                       && contact.isFriend == true)) {
+                       && contact != null)) {
                     checked = true;
+                }
+                if (contact == null) {
+                    contact = MapData.contacts.getNewAnonymousContact();
+                    isFriend = false;
                 }
                 RouteListEntry e = new RouteListEntry(contact,
                                                       MapData.colorGenerator.getNewColor(),
+                                                      isFriend,
                                                       checked,
                                                       input.second);
                 toAdd.add(e);

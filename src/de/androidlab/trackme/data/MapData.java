@@ -3,8 +3,8 @@ package de.androidlab.trackme.data;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.content.Context;
 import android.content.SharedPreferences;
-
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.map.ColorGenerator;
 import de.androidlab.trackme.map.RouteListEntry;
@@ -14,6 +14,7 @@ public class MapData {
     public static boolean isInitialized = false;
     public static ColorGenerator colorGenerator = new ColorGenerator(10);
     public static List<RouteListEntry> data = new ArrayList<RouteListEntry>();
+    public static HashedIdentification contacts = new HashedIdentification();
     public static int lastActive;
     public static boolean traffic;
     public static boolean satellite;
@@ -28,6 +29,11 @@ public class MapData {
     public static boolean defaultSatellite = false;
     public static boolean defaultTraffic = false;
     public static int defaultSetting = R.id.mapview_radio_friends;
+    
+    public static void init(Context context, SharedPreferences pref) {
+        contacts.init(context);
+        restoreFromPreferences(pref);
+    }
     
     public static void storeInPreferences(SharedPreferences.Editor pref) {
         pref.putBoolean("default_update", defaultUpdate);

@@ -15,7 +15,6 @@ import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
-import de.androidlab.trackme.map.RouteListEntry;
 
 public class SettingsMapTabActivity extends Activity {
     
@@ -135,6 +134,5 @@ public class SettingsMapTabActivity extends Activity {
     protected void onPause() {
         super.onPause();
         MapData.storeInPreferences(getSharedPreferences("TrackMeActivity", 0).edit());
-        System.out.println("Saved");
     }
 }

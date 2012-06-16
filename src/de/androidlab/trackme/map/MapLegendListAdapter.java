@@ -2,16 +2,16 @@ package de.androidlab.trackme.map;
 
 import java.util.List;
 
-import com.google.android.maps.MapView;
-
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.maps.MapView;
+
 import de.androidlab.trackme.R;
 
 public class MapLegendListAdapter extends android.widget.ArrayAdapter<RouteListEntry> {
