@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.MapData;
+import de.androidlab.trackme.db.LocationDatabase;
 import de.androidlab.trackme.listeners.HomeButtonListener;
 import de.androidlab.trackme.listeners.TrackMeLocationListener;
 
@@ -56,6 +57,15 @@ public class TrackMeActivity extends Activity {
         TrackMeLocationListener locationListener = new TrackMeLocationListener();
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        
+        // Setup / open database
+        db = new LocationDatabase(getBaseContext());
     }
 
+    @Override
+    public void onDestroy() {
+    	db.close();
+    }
+    
+    LocationDatabase db;
 }
