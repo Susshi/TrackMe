@@ -1,12 +1,18 @@
 package de.androidlab.trackme.db;
 
 import java.util.Date;
+import java.util.Vector;
+
+import com.google.android.maps.GeoPoint;
+
+import de.androidlab.trackme.interfaces.DatabaseListener;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.util.Log;
+import android.util.Pair;
 
 /**
  * Database for storing location information of users
@@ -90,6 +96,37 @@ public class LocationDatabase {
 	}
 	
 	/**
+	 * Registers a new listener. The listener must implement the method
+	 * {@linkPlain de.androidlab.trackme#onDatabaseChange(Vector<Pair<String, GeoPoint[]>> newData) onDatabaseChange}
+	 * which is evoked on every change (insertion / deletion / altering) of the database. 
+	 * The full database is given in parameter 'data' 
+	 * 
+	 * @param listener The new listener that wants to be updated on any change in the database
+	 * @returns True, if listener was not registered before, but is now registered, false otherwise (which means
+	 * the listener was registered before and/or was not registered now)
+	 */
+	public boolean registerDatabaseListener(DatabaseListener listener) {
+		if(!listeners.contains(listener))
+		{
+			listeners.add(listener);
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	/**
+	 * Unregisters listener. No more updated data from the database
+	 * will be transmitted to the DatabaseListener
+	 * 
+	 * @param listener The listener that wants to be deleted
+	 * @returns True, if listener was found and deleted, false otherwise
+	 */
+	public boolean unregisterDatabaseListener(DatabaseListener listener) {
+		return listeners.remove(listener);
+	}
+	
+	/**
 	 * Checks if latitude value is in correct limits
 	 * @param latitude Must be in between -90.0 and 90.0
 	 * @return True if latitude value is in the limits, false else.
@@ -131,4 +168,9 @@ public class LocationDatabase {
 	 * the database as well as closing it.
 	 */
 	private LocationDatabaseOpenHelper openHelper;
+	
+	/**
+	 * All registered DatabaseListeners are stored here
+	 */
+	Vector<DatabaseListener> listeners;
 }
