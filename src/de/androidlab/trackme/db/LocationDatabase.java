@@ -1,6 +1,7 @@
 package de.androidlab.trackme.db;
 
 import java.util.Date;
+import java.util.Calendar;
 import java.util.Vector;
 
 import com.google.android.maps.GeoPoint;
@@ -53,7 +54,7 @@ public class LocationDatabase {
 	 * @return True, if insertion succeeded (which is when the data was inserted OR was not inserted but the
 	 * expiration date lies in the past), false else. 
 	 */
-	public boolean insertLocation(String hash, double latitude, double longitude, long expirationInUnixSeconds) {
+	public boolean insertLocation(String hash, double latitude, double longitude, long expirationInUnixSeconds, long timestamp) {
 		boolean returnValue = false;
 		
 		if(hash != null && checkLatitude(latitude) && checkLongitude(longitude) && checkDate(expirationInUnixSeconds)) {
@@ -62,26 +63,34 @@ public class LocationDatabase {
 			toInsert.put("latitude", latitude);
 			toInsert.put("longitude", longitude);
 			toInsert.put("expirationDate", expirationInUnixSeconds);
+			toInsert.put("timestamp", timestamp);
 			
 			// TODO: CHECK IF CURRENT DATA IS EXPIRED IF YES SET RETURN VALUE TO TRUE AND !IGNORE INSERTION!
 			// ELSE:
-			
-			long row = -1;
-			try {
-				row = openHelper.getWritableDatabase().insert("locations", null, toInsert);
-			} 
-			catch (SQLException e)
+			if(expirationInUnixSeconds > Calendar.getInstance().get(Calendar.MILLISECOND))
 			{
-				Log.e("DATABASE", "Error while inserting", e);
-				return false;
+				long row = -1;
+				try {
+					row = openHelper.getWritableDatabase().insert("locations", null, toInsert);
+				} 
+				catch (SQLException e)
+				{
+					Log.e("DATABASE", "Error while inserting", e);
+					return false;
+				}
+				Log.i("DATABASE", "Inserted to Row " + row + ": " + hash + " | " + latitude + " | " + longitude + " | " + new Date(expirationInUnixSeconds * 1000) + " | " + timestamp);
+				returnValue = true;
 			}
-			Log.i("DATABASE", "Inserted to Row " + row + ": " + hash + " | " + latitude + " | " + longitude + " | " + new Date(expirationInUnixSeconds * 1000));
-			returnValue = true;
+			else
+			{
+				returnValue = true;
+			}
+			
 		}
 		else
 			returnValue = false;
 		
-		//TODO: CHECK FOR EXPIRED LOCATION DATES IN DATABASE
+		deleteOldEntries();
 		return returnValue;
 	}
 	
@@ -136,6 +145,19 @@ public class LocationDatabase {
 			return true;
 		else
 			return false;
+	}
+	
+	/**
+	 * Checks if there are entries in the database that have exceeded their
+	 * lifetime. If so, they are deleted immediately.
+	 * @return The number of deleted entries
+	 */
+	private int deleteOldEntries()
+	{
+		Integer millisec = Calendar.getInstance().get(Calendar.MILLISECOND);
+		int rowsDeleted = openHelper.getWritableDatabase().delete("locations", "expirationDate < " + millisec, null);
+		Log.i("DATABASE","Deleted " + rowsDeleted + " rows because their expiration date was exceeded.");
+		return rowsDeleted;
 	}
 	
 	/**
