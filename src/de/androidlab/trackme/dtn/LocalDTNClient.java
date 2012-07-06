@@ -380,7 +380,7 @@ public class LocalDTNClient {
 					
 					Log.d(LOGTAG, result);
 					try {
-						if(sendMessage(p, srcEndpoint, mPresenceTTL))
+						if(sendMessage(p, srcEndpoint, mDataTTL))
 							Log.d(LOGTAG, "Message sent!");
 					} catch (Exception e) {
 						// TODO Auto-generated catch block

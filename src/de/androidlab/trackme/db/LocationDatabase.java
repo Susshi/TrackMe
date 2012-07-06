@@ -61,7 +61,7 @@ public class LocationDatabase {
 			entries.remove(0);
 			Log.d("DATABASE", "BEFORE: " + entry);
 			String[] columns = entry.trim().split(" ");
-			Log.d("DATABSE", "AFTER: " + Arrays.toString(columns));
+			Log.d("DATABASE", "AFTER: " + Arrays.toString(columns));
 			for(int i = 0; i < 5; i++)
 			{
 				try{

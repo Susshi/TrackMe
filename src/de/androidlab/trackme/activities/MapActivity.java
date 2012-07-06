@@ -9,6 +9,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -192,11 +195,25 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
                 toRemove.add(e);
             }
         }
+
+        final Handler handler = new Handler() {
+        	public void handleMessage(Message msg) {
+        		        Toast.makeText(MapActivity.this,
+                toAdd.size() + " entries are new\n" +
+                toRemove.size() + " entries are obsolete",
+                Toast.LENGTH_SHORT).show();
+        	}
+        };
         
-        Toast.makeText(this,
-                       toAdd.size() + " entries are new\n" +
-                       toRemove.size() + " entries are obsolete",
-                       Toast.LENGTH_SHORT).show();
+//        new Thread() {
+//        	public void run() {
+//        		Looper.prepare();
+//        		handler.sendMessage(handler.obtainMessage());
+//        		Looper.loop();
+//        	}
+//        }.start();
+ 
+
     }
    
     private void updateRoutes() {
@@ -452,5 +469,6 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
 	public void onDatabaseChangeRaw(Vector<String> data) {
 
 	}
+       
 
 }
