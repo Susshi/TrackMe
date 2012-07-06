@@ -26,15 +26,19 @@ import android.util.Pair;
  */
 public class LocationDatabase {
 	
+	public LocationDatabase(Context context) {
+	}
+	
 	/**
 	 * Creates a database object and tries to open or create
 	 * the necessary underlying database
 	 * 
 	 * @param context Most times this is the Base Context from the 'main' activity
 	 */
-	public LocationDatabase(Context context) {
+	public void init(Context context)
+	{
 		openHelper = new LocationDatabaseOpenHelper(context);
-		
+	
 		listeners = new Vector<DatabaseListener>();
 	}
 	
