@@ -90,9 +90,10 @@ public class LocalDTNClient {
 	// first time init flag
 	boolean mInit;
 	
-	void localDTNClient(LocationDatabase db)
+	public LocalDTNClient(LocationDatabase db)
 	{
 		mInit = false;
+		mLocationDatabase = db;
 	}
 	
 	protected class LDTNClient extends DTNClient {
