@@ -52,14 +52,14 @@ public class TrackMeActivity extends Activity {
         
         MapData.init(this, getSharedPreferences("TrackMeActivity", 0));
         
-        // Setup location callbacks
-        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        TrackMeLocationListener locationListener = new TrackMeLocationListener();
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-        
         // Setup / open database
         db = new LocationDatabase(getBaseContext());
+        
+        // Setup location callbacks
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        TrackMeLocationListener locationListener = new TrackMeLocationListener(db, getBaseContext());
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 
     @Override

@@ -8,4 +8,5 @@ import com.google.android.maps.GeoPoint;
 
 public interface DatabaseListener {
 	public void onDatabaseChange(Vector<Pair<String, GeoPoint[]>> newData);
+	public void onDatabaseChangeRaw(Vector<String> data);
 }

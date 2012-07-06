@@ -16,12 +16,15 @@ class LocationDatabaseOpenHelper extends SQLiteOpenHelper {
 
 	}
 
+	
+	// TODO: CHECK CREATE STATEMENT (ESPECIALLY THE PRIMARY KEY)
 	// Evoked when database to be opened does not exist
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		try {
-			db.execSQL("CREATE TABLE IF NOT EXISTS locations(id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-			"hash TEXT NOT NULL, latitude REAL NOT NULL, longitude REAL NOT NULL, expirationDate INTEGER NOT NULL)");
+			db.execSQL("CREATE TABLE IF NOT EXISTS locations(" +
+			"hash TEXT NOT NULL, latitude REAL NOT NULL, longitude REAL NOT NULL, " +
+			"expirationDate INTEGER NOT NULL, timestamp INTEGER PRIMARY KEY NOT NULL)");
 		}
 		catch(SQLException e) {
 			Log.e("DATABASE", e.getLocalizedMessage());

@@ -34,6 +34,69 @@ public class LocationDatabase {
 	 */
 	public LocationDatabase(Context context) {
 		openHelper = new LocationDatabaseOpenHelper(context);
+		
+		listeners = new Vector<DatabaseListener>();
+	}
+	
+	/**
+	 * Inserts a bunch of new locations to the database. See 
+	 * {@linkPlain de.androidlab.trackme#insertLocation(String hash, double latitude, double longitude, long expirationInUnixSeconds, long timestamp) insertLocation}
+	 * for more information about inserting. This method extracts the information
+	 * from a vector of Strings (Every String has to contain one entry) and inserts
+	 * the extracted entry if the entry is complete 
+	 */
+	public boolean insertLocations(Vector<String> entriesAsStrings)
+	{
+		boolean hasSucceeded = true;
+		
+		Vector<String> entries = new Vector<String>(entriesAsStrings);
+		
+		while(entries.size() > 0)
+		{
+			String entry = entries.firstElement();
+			entries.remove(0);
+			
+			String[] columns = entry.split(" ");
+			for(int i = 0; i < 5; i++)
+			{
+				try{
+					if(columns[i] == null)
+					{
+						hasSucceeded = false;
+						continue;
+					}
+				}
+				catch(ArrayIndexOutOfBoundsException e)
+				{
+					hasSucceeded = false;
+					continue;
+				}
+			}
+			
+			double lat;
+			double lon;
+			int expiration;
+			int timestamp;
+			
+			try{
+				lat = Double.parseDouble(columns[1]);
+				lon = Double.parseDouble(columns[2]);
+				expiration = Integer.parseInt(columns[3]);
+				timestamp = Integer.parseInt(columns[4]);
+			}catch(NumberFormatException e)
+			{
+				hasSucceeded = false;
+				Log.e("DATABASE", "Could not extract number from String", e);
+				continue;
+			}
+			
+			if(hasSucceeded)
+				hasSucceeded = insertLocation(columns[0], lat, lon, expiration, timestamp);
+			else
+				insertLocation(columns[0], lat, lon, expiration, timestamp);
+		}
+		
+		return hasSucceeded;
 	}
 	
 	/**
@@ -65,8 +128,6 @@ public class LocationDatabase {
 			toInsert.put("expirationDate", expirationInUnixSeconds);
 			toInsert.put("timestamp", timestamp);
 			
-			// TODO: CHECK IF CURRENT DATA IS EXPIRED IF YES SET RETURN VALUE TO TRUE AND !IGNORE INSERTION!
-			// ELSE:
 			if(expirationInUnixSeconds > Calendar.getInstance().get(Calendar.MILLISECOND))
 			{
 				long row = -1;
@@ -90,7 +151,13 @@ public class LocationDatabase {
 		else
 			returnValue = false;
 		
+		
 		deleteOldEntries();
+		
+		if(returnValue)
+		{
+			informListeners();
+		}
 		return returnValue;
 	}
 	
@@ -136,18 +203,6 @@ public class LocationDatabase {
 	}
 	
 	/**
-	 * Checks if latitude value is in correct limits
-	 * @param latitude Must be in between -90.0 and 90.0
-	 * @return True if latitude value is in the limits, false else.
-	 */
-	private boolean checkLatitude(double latitude) {
-		if(latitude >= -90.0 && latitude <= 90.0)
-			return true;
-		else
-			return false;
-	}
-	
-	/**
 	 * Checks if there are entries in the database that have exceeded their
 	 * lifetime. If so, they are deleted immediately.
 	 * @return The number of deleted entries
@@ -158,6 +213,111 @@ public class LocationDatabase {
 		int rowsDeleted = openHelper.getWritableDatabase().delete("locations", "expirationDate < " + millisec, null);
 		Log.i("DATABASE","Deleted " + rowsDeleted + " rows because their expiration date was exceeded.");
 		return rowsDeleted;
+	}
+	
+	/** 
+	 * Returns all current database entries as list (vector)
+	 * of Strings (one String per entry)
+	 */
+	public Vector<String> getDatabaseAsStrings()
+	{
+		deleteOldEntries();
+		
+		Cursor rows = openHelper.getReadableDatabase().query(
+				"locations", 
+				new String[]{"hash","latitude","longitude","expirationDate","timestamp"},
+				null,    
+				null,    
+				null,	 
+				null,    
+				"hash asc, timestamp asc");
+		
+		if(rows.getCount() <= 0)
+			return new Vector<String>();
+		
+		Vector<String> dbAsStringVector = new Vector<String>();
+		
+		while(rows.moveToNext())
+		{
+			String raw = "";
+			for(int k = 0; k < rows.getColumnCount(); k++)
+				raw = raw + " " + rows.getString(k); 
+			dbAsStringVector.add(raw);
+		}
+		
+		return dbAsStringVector;
+	}
+	
+	/**
+	 * Informs the Listeners about the data in the database
+	 * The data is given to the listeners as they require the information.
+	 */
+	private void informListeners()
+	{
+		if(listeners.size() <= 0)
+			return;
+		
+		Vector<String> rawData = new Vector<String>();
+		Vector<Pair<String, GeoPoint[]>> abstractedData = new Vector<Pair<String, GeoPoint[]>>();
+		
+		Cursor rows = openHelper.getReadableDatabase().query(
+				"locations", 
+				new String[]{"hash","latitude","longitude","expirationDate","timestamp"},
+				null,    
+				null,    
+				null,	 
+				null,    
+				"hash asc, timestamp asc");
+		
+		if(rows.getCount() <= 0)
+			return;
+		
+		String currentHash = "";
+		Vector<GeoPoint> currentPoints = new Vector<GeoPoint>();
+		
+		while(rows.moveToNext())
+		{
+			String raw = "";
+			for(int k = 0; k < rows.getColumnCount(); k++)
+				raw = raw + " " + rows.getString(k); 
+			rawData.add(raw);
+			Log.i("DATABASE","Informed Listeners about entry no " + 
+					new Integer(rows.getPosition()).toString() + " : " + raw);
+			
+			if(currentHash != rows.getString(0))
+			{
+				GeoPoint[] points = {};
+				currentPoints.toArray(points);
+				abstractedData.add(new Pair<String, GeoPoint[]>(currentHash, points));
+				currentHash = rows.getString(0);
+				currentPoints.clear();
+			}
+			
+			int lat, lon;
+			lat = (int)(rows.getFloat(1) * 1E6);
+			lon = (int)(rows.getFloat(2) * 1E6);
+			GeoPoint point = new GeoPoint(lat,lon);
+			currentPoints.add(point);	
+		}
+		
+		for(int i = 0; i < listeners.size(); i++)
+		{
+			DatabaseListener listener = listeners.elementAt(i);
+			listener.onDatabaseChange(abstractedData);
+			listener.onDatabaseChangeRaw(rawData);
+		}
+	}
+	
+	/**
+	 * Checks if latitude value is in correct limits
+	 * @param latitude Must be in between -90.0 and 90.0
+	 * @return True if latitude value is in the limits, false else.
+	 */
+	private boolean checkLatitude(double latitude) {
+		if(latitude >= -90.0 && latitude <= 90.0)
+			return true;
+		else
+			return false;
 	}
 	
 	/**
