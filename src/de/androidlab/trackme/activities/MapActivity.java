@@ -196,14 +196,14 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
             }
         }
 
-        final Handler handler = new Handler() {
-        	public void handleMessage(Message msg) {
-        		        Toast.makeText(MapActivity.this,
-                toAdd.size() + " entries are new\n" +
-                toRemove.size() + " entries are obsolete",
-                Toast.LENGTH_SHORT).show();
-        	}
-        };
+//        final Handler handler = new Handler() {
+//        	public void handleMessage(Message msg) {
+//        		        Toast.makeText(MapActivity.this,
+//                toAdd.size() + " entries are new\n" +
+//                toRemove.size() + " entries are obsolete",
+//                Toast.LENGTH_SHORT).show();
+//        	}
+//        };
         
 //        new Thread() {
 //        	public void run() {
