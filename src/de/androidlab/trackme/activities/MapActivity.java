@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -110,9 +109,6 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         
         // Restore old state
         restoreOldData();
-        
-        // Register at DB
-        TrackMeActivity.db.registerDatabaseListener(this);
     }
 
     private void restoreOldData() {
@@ -178,7 +174,7 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
                     checked = true;
                 }
                 if (contact == null) {
-                    contact = MapData.contacts.getNewAnonymousContact();
+                    contact = MapData.contacts.getNewAnonymousContact(input.first);
                     isFriend = false;
                 }
                 RouteListEntry e = new RouteListEntry(contact,

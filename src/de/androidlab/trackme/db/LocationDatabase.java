@@ -1,12 +1,8 @@
 package de.androidlab.trackme.db;
 
+import java.util.Arrays;
 import java.util.Date;
-import java.util.Calendar;
 import java.util.Vector;
-
-import com.google.android.maps.GeoPoint;
-
-import de.androidlab.trackme.interfaces.DatabaseListener;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -14,6 +10,10 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.util.Log;
 import android.util.Pair;
+
+import com.google.android.maps.GeoPoint;
+
+import de.androidlab.trackme.interfaces.DatabaseListener;
 
 /**
  * Database for storing location information of users
@@ -79,14 +79,14 @@ public class LocationDatabase {
 			
 			double lat;
 			double lon;
-			int expiration;
-			int timestamp;
+			long expiration;
+			long timestamp;
 			
 			try{
 				lat = Double.parseDouble(columns[1]);
 				lon = Double.parseDouble(columns[2]);
-				expiration = Integer.parseInt(columns[3]);
-				timestamp = Integer.parseInt(columns[4]);
+				expiration = Long.parseLong(columns[3]);
+				timestamp = Long.parseLong(columns[4]);
 			}catch(NumberFormatException e)
 			{
 				hasSucceeded = false;
@@ -132,7 +132,7 @@ public class LocationDatabase {
 			toInsert.put("expirationDate", expirationInUnixSeconds);
 			toInsert.put("timestamp", timestamp);
 			
-			if(expirationInUnixSeconds > Calendar.getInstance().get(Calendar.MILLISECOND))
+			if(expirationInUnixSeconds > System.currentTimeMillis())
 			{
 				long row = -1;
 				try {
@@ -217,7 +217,7 @@ public class LocationDatabase {
 	 */
 	private int deleteOldEntries()
 	{
-		Integer millisec = Calendar.getInstance().get(Calendar.MILLISECOND);
+		Long millisec = System.currentTimeMillis();
 		int rowsDeleted = openHelper.getWritableDatabase().delete("locations", "expirationDate < " + millisec, null);
 		if(rowsDeleted > 0) {
 			informListeners(false);
@@ -241,7 +241,7 @@ public class LocationDatabase {
 				null,    
 				null,	 
 				null,    
-				"hash asc, timestamp asc");
+				"hash asc, timestamp desc");
 		
 		if(rows.getCount() <= 0)
 			return new Vector<String>();
@@ -299,14 +299,16 @@ public class LocationDatabase {
 			Log.i("DATABASE","Informed Listeners about entry no " + 
 					new Integer(rows.getPosition()).toString() + " : " + raw);
 			
-			if(currentHash != rows.getString(0))
+			if(!currentHash.equals(rows.getString(0)))
 			{
-				GeoPoint[] points = {};
-				currentPoints.toArray(points);
-				abstractedData.add(new Pair<String, GeoPoint[]>(currentHash, points));
-				Log.d("DATABASE","Added to Return vector: " + currentHash + points.toString());
+				if(!currentHash.equals("")) {
+					GeoPoint[] points = {};
+					currentPoints.toArray(points);
+					abstractedData.add(new Pair<String, GeoPoint[]>(currentHash, points));
+					Log.d("DATABASE","Added to Return vector: Hash:" + currentHash + " Points: "+ Arrays.toString(points));
+					currentPoints.clear();
+				}
 				currentHash = rows.getString(0);
-				currentPoints.clear();
 			}
 			
 			int lat, lon;
@@ -315,6 +317,13 @@ public class LocationDatabase {
 			GeoPoint point = new GeoPoint(lat,lon);
 			currentPoints.add(point);	
 		}
+		
+		GeoPoint[] points = new GeoPoint[currentPoints.size()];
+		currentPoints.toArray(points);
+		abstractedData.add(new Pair<String, GeoPoint[]>(currentHash, points));
+		Log.d("DATABASE","Added to Return vector: Hash:" + currentHash + " Points: "+ Arrays.toString(points));
+		currentPoints.clear();
+		
 		
 		if(!simulate) {
 			for(int i = 0; i < listeners.size(); i++)

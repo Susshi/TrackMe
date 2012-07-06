@@ -1,16 +1,13 @@
 package de.androidlab.trackme.listeners;
 
-import java.util.Calendar;
-
-import de.androidlab.trackme.db.LocationDatabase;
-import de.androidlab.trackme.utils.Converter;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import de.androidlab.trackme.db.LocationDatabase;
+import de.androidlab.trackme.utils.Converter;
 
 /** Listener for the current Location of this mobile phone 
  * @author Mario Wozenilek
@@ -39,8 +36,8 @@ public class TrackMeLocationListener implements LocationListener {
 			phoneNumber = Converter.normalizeNumber(phoneNumber);
 			hash = Converter.calculateHash(phoneNumber);
 			  
-			int timestamp = Calendar.getInstance().get(Calendar.MILLISECOND);
-			int expiration = timestamp + 259200000; // 72 h
+			long timestamp = System.currentTimeMillis();
+			long expiration = timestamp + 259200000; // 72 h
 			
 			db.insertLocation(hash, newLocation.getLatitude(), newLocation.getLongitude(), expiration, timestamp);
 			lastLocation = newLocation;

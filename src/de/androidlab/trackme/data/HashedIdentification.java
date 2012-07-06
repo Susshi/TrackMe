@@ -75,10 +75,11 @@ public class HashedIdentification {
         return map.get(hashedNumber);
     }
     
-    public ContactInfo getNewAnonymousContact() {
+    public ContactInfo getNewAnonymousContact(String number) {
         ContactInfo info = new ContactInfo();
         info.picture = BitmapFactory.decodeResource(context.getResources(), anonymousPicture);
         info.name = "Anonymous" + anonymousCounter++;
+        info.numbers.add(number);
         return info;
     }
 

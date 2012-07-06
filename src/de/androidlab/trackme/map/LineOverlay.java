@@ -30,6 +30,7 @@ public class LineOverlay extends Overlay {
             for (int i = 1; i < points.length; i++) {
                 pointNew = projection.toPixels(points[i], null);
                 canvas.drawLine(pointOld.x, pointOld.y, pointNew.x, pointNew.y, paint);
+                pointOld = pointNew;
             }
         }
     }
