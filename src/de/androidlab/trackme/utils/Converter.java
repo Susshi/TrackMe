@@ -38,10 +38,9 @@ public class Converter {
         };
     
     public static String normalizeNumber(String number) {
-        String normalizedNumber = number;
+        String normalizedNumber = PhoneNumberUtils.stripSeparators(number);
         if (number.startsWith("+")) {
             normalizedNumber = normalizedNumber.substring(1);
-            normalizedNumber = PhoneNumberUtils.stripSeparators(normalizedNumber);
             for (String code : countryCodes) {
                 if (normalizedNumber.startsWith(code) == true) {
                     normalizedNumber = "0" + normalizedNumber.substring(code.length());

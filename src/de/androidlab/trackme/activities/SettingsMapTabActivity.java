@@ -39,8 +39,6 @@ public class SettingsMapTabActivity extends Activity {
         setupSatellite();
         setupAntialiasing();
         setupStrokeWidth();
-        
-        System.out.println("Created");
     }
 
     private void setupStrokeWidth() {

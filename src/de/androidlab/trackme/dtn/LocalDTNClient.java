@@ -2,11 +2,9 @@ package de.androidlab.trackme.dtn;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -22,9 +20,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
-import android.preference.PreferenceManager;
 import android.util.Log;
-
 import de.androidlab.trackme.db.LocationDatabase;
 import de.tubs.ibr.dtn.api.Block;
 import de.tubs.ibr.dtn.api.Bundle;
@@ -57,13 +53,13 @@ public class LocalDTNClient {
 	// entire header size
 	private final static int HEADER_SIZE = HEADER_TYPE_SIZE + HEADER_LENGTH_SIZE;
 	// 15 minutes default retransmission time
-	private final static int DEFAULT_RETRANSMISSION_TIME = 1000 * 60 * 15;
+	private final static int DEFAULT_RETRANSMISSION_TIME = 1000 * 60 * 1;
 	// default presence notification delay - 5 seconds
 	private final static int DEFAULT_PRESENCE_NOTIFICATION_DELAY = 1000 * 5;
 	// default presence ttl - 5 seconds
-	private final static int DEFAULT_PRESENCE_TTL = 5;
+	private final static int DEFAULT_PRESENCE_TTL = 1000;
 	// default data ttl - 120 seconds
-	private final static int DEFAULT_DATA_TTL = 20;
+	private final static int DEFAULT_DATA_TTL = 1000;
 	
 	private int mRetransmissionTime, mPresenceNotificationDelay, mPresenceTTL, mDataTTL;
 	// global package name
@@ -94,9 +90,10 @@ public class LocalDTNClient {
 	// first time init flag
 	boolean mInit;
 	
-	void localDTNClient(LocationDatabase db)
+	public LocalDTNClient(LocationDatabase db)
 	{
 		mInit = false;
+		mLocationDatabase = db;
 	}
 	
 	protected class LDTNClient extends DTNClient {
@@ -383,7 +380,8 @@ public class LocalDTNClient {
 					
 					Log.d(LOGTAG, result);
 					try {
-						sendMessage(p, srcEndpoint, mPresenceTTL);
+						if(sendMessage(p, srcEndpoint, mPresenceTTL))
+							Log.d(LOGTAG, "Message sent!");
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
