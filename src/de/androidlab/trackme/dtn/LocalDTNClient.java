@@ -25,6 +25,7 @@ import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import de.androidlab.trackme.db.LocationDatabase;
 import de.tubs.ibr.dtn.api.Block;
 import de.tubs.ibr.dtn.api.Bundle;
 import de.tubs.ibr.dtn.api.CallbackMode;
@@ -80,6 +81,9 @@ public class LocalDTNClient {
 	// DTN-client to talk with the DTN service
 	private LDTNClient mClient = null;
 	
+	// Interface for DB communication
+	private LocationDatabase mLocationDatabase;
+	
 	// Timer for presence notification
 	PresenceTimerTask mTask = new PresenceTimerTask();
 	Timer mTimer = new Timer();
@@ -90,7 +94,7 @@ public class LocalDTNClient {
 	// first time init flag
 	boolean mInit;
 	
-	void localDTNClient()
+	void localDTNClient(LocationDatabase db)
 	{
 		mInit = false;
 	}
@@ -355,10 +359,9 @@ public class LocalDTNClient {
 					mPresenceMap.put(srcEndpoint, currentTime);
 					
 					// send data to endpoint!
-					Vector<String> strings = new Vector<String>();	// getting string vector
-					strings.add("Test1;");
-					strings.add("Test2;");
-					strings.add("Test3;");
+					
+					Vector<String> strings = mLocationDatabase.getDatabaseAsStrings();	// getting string vector
+
 					String result = new String();
 					for(int i = 0; i < strings.size(); i++)
 					{
@@ -400,6 +403,7 @@ public class LocalDTNClient {
 
 		        // create vector for given list
 		        Vector<String> vector = new Vector<String>(list);
+		        mLocationDatabase.insertLocations(vector);
 		        for(int i = 0; i < vector.size(); i++)
 		        	Log.d(LOGTAG, vector.get(i));
 		        // parse vector to db
