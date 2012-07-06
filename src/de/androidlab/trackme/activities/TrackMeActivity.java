@@ -53,7 +53,7 @@ public class TrackMeActivity extends Activity {
         MapData.init(this, getSharedPreferences("TrackMeActivity", 0));
         
         // Setup / open database
-        db = new LocationDatabase(getBaseContext());
+        db.init(getBaseContext());
         
         // Setup location callbacks
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -67,5 +67,5 @@ public class TrackMeActivity extends Activity {
     	db.close();
     }
     
-    LocationDatabase db;
+    public static LocationDatabase db = new LocationDatabase();
 }

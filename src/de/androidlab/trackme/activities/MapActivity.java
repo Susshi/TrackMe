@@ -11,6 +11,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -26,13 +27,14 @@ import com.google.android.maps.MyLocationOverlay;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.ContactInfo;
 import de.androidlab.trackme.data.MapData;
+import de.androidlab.trackme.interfaces.DatabaseListener;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
 import de.androidlab.trackme.map.LineOverlay;
 import de.androidlab.trackme.map.MapLegendListAdapter;
 import de.androidlab.trackme.map.RouteListEntry;
 
-public class MapActivity extends com.google.android.maps.MapActivity {
+public class MapActivity extends com.google.android.maps.MapActivity implements DatabaseListener {
 	
 	// TODO Testdaten entfernen
 	private static Vector<Pair<String, GeoPoint[]>> testInput1 = new Vector<Pair<String, GeoPoint[]>>();
@@ -68,7 +70,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     private MyLocationOverlay myLocationOverlay;
     private List<RouteListEntry> toRemove = new LinkedList<RouteListEntry>();
     private List<RouteListEntry> toAdd = new LinkedList<RouteListEntry>();
-    private boolean updateDisabled = false;
     private ListView legend;
     
     /** Called when the activity is first created. */
@@ -86,7 +87,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         backBtn.setOnClickListener(new BackButtonListener(this));
         
         // Refresh Button
-        setupRefreshButton();
+        setupRefreshButton(this);
         
         // Toggle Buttons
         setupToggleLegendButton();
@@ -107,18 +108,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         setupMyLocation();
         setupMapLegend();
         
-        // Update Data only, Routes are updated after the state is restored 
-        if (MapData.defaultUpdate == true) {
-        	updateData();
-        }
-        
         // Restore old state
         restoreOldData();
         
-        // Update Routes
-        updateRoutes();
-        updateDisabled = true;
-
+        // Register at DB
+        TrackMeActivity.db.registerDatabaseListener(this);
     }
 
     private void restoreOldData() {
@@ -153,31 +147,12 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         }
     }
     
-    private void update(boolean byAuto) {
-        if (byAuto == false || MapData.defaultUpdate == true) {
-            if (updateDisabled == false) {
-                updateData();
-                updateRoutes();
-            }
-        }
-        updateDisabled = false;
+    private void update(boolean byAuto, Vector<Pair<String, GeoPoint[]>> newData) {
+        updateData(newData);
+        updateRoutes();
     }
     
-    private void update() {
-        update(false);
-    }
-    
-    private void updateData() {
-        // TODO call correct function instead of testdata
-        Vector<Pair<String, GeoPoint[]>> newData = null;
-        switch(testCounter++%3) {
-        case 0: newData = testInput1;
-                break;
-        case 1: newData = testInput2;
-                break;
-        case 2: newData = testInput3;
-                break;
-        }
+    private void updateData(Vector<Pair<String, GeoPoint[]>> newData) {
         toAdd.clear();
         toRemove.clear();
         List<RouteListEntry> visited = new LinkedList<RouteListEntry>();
@@ -266,15 +241,11 @@ public class MapActivity extends com.google.android.maps.MapActivity {
             e.line = null;  
         }
     }
-
-    public void onStart() {
-        super.onStart();
-        update(true);
-    }
     
     @Override
     public void onResume() {
       super.onResume();
+      TrackMeActivity.db.registerDatabaseListener(this);
       if (MapData.followActive == true) {
           myLocationOverlay.enableMyLocation();
           myLocationOverlay.enableCompass();
@@ -284,6 +255,7 @@ public class MapActivity extends com.google.android.maps.MapActivity {
     @Override
     protected void onPause() {
       super.onPause();
+      TrackMeActivity.db.unregisterDatabaseListener(this);
       if (MapData.followActive == true) {
           myLocationOverlay.disableCompass();
           myLocationOverlay.disableMyLocation();
@@ -299,7 +271,6 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         RadioButton customBtn = (RadioButton)findViewById(R.id.mapview_radio_custom);
         customBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                updateDisabled = true;
                 startActivityForResult(new Intent(MapActivity.this,
                                                   RouteListActivity.class),
                                                   SHOWROUTESREQUEST);
@@ -399,13 +370,26 @@ public class MapActivity extends com.google.android.maps.MapActivity {
         }); 
     }
 
-    private void setupRefreshButton() {
+    private void setupRefreshButton(MapActivity mapActivity) {
         Button refreshBtn = (Button)findViewById(R.id.mapview_btn_refresh);
-        refreshBtn.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                update();
-            }
-        });
+        
+        class RefreshListener implements View.OnClickListener {
+        	
+        	private MapActivity mapActivity;
+        	
+        	public RefreshListener(MapActivity mapActivity) {
+        		this.mapActivity = mapActivity;
+        	}
+        	
+    	    public void onClick(View v) {
+	        	boolean updateState = MapData.defaultUpdate;
+	            MapData.defaultUpdate = true;
+	            TrackMeActivity.db.registerDatabaseListener(mapActivity);
+	            MapData.defaultUpdate = updateState;
+    	    }
+        }
+        
+        refreshBtn.setOnClickListener(new RefreshListener(mapActivity));
     }
     
     private void setupMapLegend() {
@@ -460,5 +444,17 @@ public class MapActivity extends com.google.android.maps.MapActivity {
                                 break;
         }
     }
+
+	@Override
+	public void onDatabaseChange(Vector<Pair<String, GeoPoint[]>> newData) {
+		if (MapData.defaultUpdate == true) {
+			update(true, newData);
+		}
+	}
+
+	@Override
+	public void onDatabaseChangeRaw(Vector<String> data) {
+
+	}
 
 }

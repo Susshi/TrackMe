@@ -26,7 +26,7 @@ import android.util.Pair;
  */
 public class LocationDatabase {
 	
-	public LocationDatabase(Context context) {
+	public LocationDatabase() {
 	}
 	
 	/**

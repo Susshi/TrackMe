@@ -55,7 +55,7 @@ public class Converter {
     public static String calculateHash(String source) {
         MessageDigest digest;
         try {
-            digest = MessageDigest.getInstance("SHA-1");
+            digest = MessageDigest.getInstance("SHA-256");
             digest.update(source.getBytes());
             byte[] bytes = digest.digest();
             StringBuffer sb = new StringBuffer();
