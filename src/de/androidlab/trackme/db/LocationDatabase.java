@@ -304,6 +304,7 @@ public class LocationDatabase {
 				GeoPoint[] points = {};
 				currentPoints.toArray(points);
 				abstractedData.add(new Pair<String, GeoPoint[]>(currentHash, points));
+				Log.d("DATABASE","Added to Return vector: " + currentHash + points.toString());
 				currentHash = rows.getString(0);
 				currentPoints.clear();
 			}
