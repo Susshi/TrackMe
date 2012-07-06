@@ -59,8 +59,9 @@ public class LocationDatabase {
 		{
 			String entry = entries.firstElement();
 			entries.remove(0);
-			
-			String[] columns = entry.split(" ");
+			Log.d("DATABASE", "BEFORE: " + entry);
+			String[] columns = entry.trim().split(" ");
+			Log.d("DATABSE", "AFTER: " + Arrays.toString(columns));
 			for(int i = 0; i < 5; i++)
 			{
 				try{

@@ -53,13 +53,13 @@ public class LocalDTNClient {
 	// entire header size
 	private final static int HEADER_SIZE = HEADER_TYPE_SIZE + HEADER_LENGTH_SIZE;
 	// 15 minutes default retransmission time
-	private final static int DEFAULT_RETRANSMISSION_TIME = 1000 * 60 * 15;
+	private final static int DEFAULT_RETRANSMISSION_TIME = 1000 * 60 * 1;
 	// default presence notification delay - 5 seconds
 	private final static int DEFAULT_PRESENCE_NOTIFICATION_DELAY = 1000 * 5;
 	// default presence ttl - 5 seconds
-	private final static int DEFAULT_PRESENCE_TTL = 5;
+	private final static int DEFAULT_PRESENCE_TTL = 1000;
 	// default data ttl - 120 seconds
-	private final static int DEFAULT_DATA_TTL = 20;
+	private final static int DEFAULT_DATA_TTL = 1000;
 	
 	private int mRetransmissionTime, mPresenceNotificationDelay, mPresenceTTL, mDataTTL;
 	// global package name
@@ -380,7 +380,8 @@ public class LocalDTNClient {
 					
 					Log.d(LOGTAG, result);
 					try {
-						sendMessage(p, srcEndpoint, mPresenceTTL);
+						if(sendMessage(p, srcEndpoint, mPresenceTTL))
+							Log.d(LOGTAG, "Message sent!");
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();

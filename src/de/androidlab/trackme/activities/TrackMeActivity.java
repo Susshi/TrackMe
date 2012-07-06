@@ -69,6 +69,7 @@ public class TrackMeActivity extends Activity {
 
     @Override
     public void onDestroy() {
+    	super.onDestroy();
     	dtnclient.close(this);
     	db.close();
     }
