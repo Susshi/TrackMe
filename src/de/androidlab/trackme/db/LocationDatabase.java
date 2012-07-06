@@ -156,7 +156,7 @@ public class LocationDatabase {
 		
 		if(returnValue)
 		{
-			informListeners();
+			informListeners(false);
 		}
 		return returnValue;
 	}
@@ -185,10 +185,14 @@ public class LocationDatabase {
 		if(!listeners.contains(listener))
 		{
 			listeners.add(listener);
+			listener.onDatabaseChange(informListeners(true));
 			return true;
 		}
 		else
+		{
+			listener.onDatabaseChange(informListeners(true));
 			return false;
+		}
 	}
 	
 	/**
@@ -211,6 +215,9 @@ public class LocationDatabase {
 	{
 		Integer millisec = Calendar.getInstance().get(Calendar.MILLISECOND);
 		int rowsDeleted = openHelper.getWritableDatabase().delete("locations", "expirationDate < " + millisec, null);
+		if(rowsDeleted > 0) {
+			informListeners(false);
+		}
 		Log.i("DATABASE","Deleted " + rowsDeleted + " rows because their expiration date was exceeded.");
 		return rowsDeleted;
 	}
@@ -251,11 +258,15 @@ public class LocationDatabase {
 	/**
 	 * Informs the Listeners about the data in the database
 	 * The data is given to the listeners as they require the information.
+	 * @param simulate Sets whether the Listers should really be informed (simulate = false), or if
+	 * just the return vectors are created but not sent to the listeners (simulate = true). In second case 
+	 * one can use the returning vector for further use without bothering the listeners.
+	 * @return All entries of the database
 	 */
-	private void informListeners()
+	private Vector<Pair<String, GeoPoint[]>> informListeners(boolean simulate)
 	{
 		if(listeners.size() <= 0)
-			return;
+			return new Vector<Pair<String, GeoPoint[]>>();
 		
 		Vector<String> rawData = new Vector<String>();
 		Vector<Pair<String, GeoPoint[]>> abstractedData = new Vector<Pair<String, GeoPoint[]>>();
@@ -270,7 +281,7 @@ public class LocationDatabase {
 				"hash asc, timestamp asc");
 		
 		if(rows.getCount() <= 0)
-			return;
+			return new Vector<Pair<String, GeoPoint[]>>();
 		
 		String currentHash = "";
 		Vector<GeoPoint> currentPoints = new Vector<GeoPoint>();
@@ -300,12 +311,16 @@ public class LocationDatabase {
 			currentPoints.add(point);	
 		}
 		
-		for(int i = 0; i < listeners.size(); i++)
-		{
-			DatabaseListener listener = listeners.elementAt(i);
-			listener.onDatabaseChange(abstractedData);
-			listener.onDatabaseChangeRaw(rawData);
+		if(!simulate) {
+			for(int i = 0; i < listeners.size(); i++)
+			{
+				DatabaseListener listener = listeners.elementAt(i);
+				listener.onDatabaseChange(abstractedData);
+				listener.onDatabaseChangeRaw(rawData);
+			}
 		}
+		
+		return abstractedData;
 	}
 	
 	/**
