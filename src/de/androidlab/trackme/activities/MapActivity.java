@@ -1,17 +1,12 @@
 package de.androidlab.trackme.activities;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Paint;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Pair;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +14,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.RadioButton;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.google.android.maps.GeoPoint;
@@ -32,9 +26,9 @@ import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.interfaces.DatabaseListener;
 import de.androidlab.trackme.listeners.BackButtonListener;
 import de.androidlab.trackme.listeners.HomeButtonListener;
-import de.androidlab.trackme.map.LineOverlay;
-import de.androidlab.trackme.map.MapLegendListAdapter;
 import de.androidlab.trackme.map.RouteListEntry;
+import de.androidlab.trackme.map.tasks.UpdateLegendTask;
+import de.androidlab.trackme.map.tasks.UpdateRoutesTask;
 
 public class MapActivity extends com.google.android.maps.MapActivity implements DatabaseListener {
 	
@@ -147,8 +141,31 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
     }
     
     private void update(boolean byAuto, Vector<Pair<String, GeoPoint[]>> newData) {
-        updateData(newData);
-        updateRoutes();
+        class UpdateThread extends Thread {
+            private Vector<Pair<String, GeoPoint[]>> data;
+            public UpdateThread(Vector<Pair<String, GeoPoint[]>> data) {
+                this.data = data;
+            }
+            public void run() {
+                updateData(data);
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        updateDisplay();
+                    }
+                });
+            }
+        };
+        new UpdateThread(newData).start();      
+    }
+    
+    private void updateDisplay() {
+        new UpdateRoutesTask(MapActivity.this,
+                             map, 
+                             MapData.defaultStrokeWidth, 
+                             MapData.defaultAntialiasing)
+            .execute(toRemove, toAdd, MapData.data);
+        new UpdateLegendTask(MapActivity.this, map, legend)
+            .execute(MapData.data); 
     }
     
     private void updateData(Vector<Pair<String, GeoPoint[]>> newData) {
@@ -194,64 +211,6 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
             if (visited.contains(e) == false) {
                 toRemove.add(e);
             }
-        }
-
-//        final Handler handler = new Handler() {
-//        	public void handleMessage(Message msg) {
-//        		        Toast.makeText(MapActivity.this,
-//                toAdd.size() + " entries are new\n" +
-//                toRemove.size() + " entries are obsolete",
-//                Toast.LENGTH_SHORT).show();
-//        	}
-//        };
-        
-//        new Thread() {
-//        	public void run() {
-//        		Looper.prepare();
-//        		handler.sendMessage(handler.obtainMessage());
-//        		Looper.loop();
-//        	}
-//        }.start();
- 
-
-    }
-   
-    private void updateRoutes() {
-        for (RouteListEntry e : toRemove) {
-            removeRoute(e);
-        }
-        MapData.data.removeAll(toRemove);
-        toRemove.clear();
-        
-        MapData.data.addAll(toAdd);
-        toAdd.clear();
-        for (RouteListEntry e : MapData.data) {
-            if (e.isChecked == true) {
-                drawRoute(e);
-            } else {
-                removeRoute(e);
-            }
-        }
-        
-        map.invalidate();
-        updateMapLegend();
-    }
-
-    private void drawRoute(RouteListEntry e) {
-        removeRoute(e);
-        Paint paint = new Paint();
-        paint.setColor(e.color);
-        paint.setStrokeWidth(MapData.defaultStrokeWidth);
-        paint.setAntiAlias(MapData.defaultAntialiasing);
-        LineOverlay line = new LineOverlay(e.coords, paint, map.getProjection());
-        map.getOverlays().add(line);
-        e.line = line;
-    }
-    
-    private void removeRoute(RouteListEntry e) {
-        if (e.line != null) {
-            map.getOverlays().remove(e.line);
-            e.line = null;  
         }
     }
     
@@ -303,7 +262,7 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
                         e.isChecked = false;
                     }
                 }
-                updateRoutes();
+                updateDisplay();
             }
         });    
     }
@@ -316,7 +275,7 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
                 for (RouteListEntry e : MapData.data) {
                     e.isChecked = true;
                 }
-                updateRoutes();
+                updateDisplay();
             }
         });
     }
@@ -384,16 +343,11 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
     }
 
     private void setupRefreshButton(MapActivity mapActivity) {
-        Button refreshBtn = (Button)findViewById(R.id.mapview_btn_refresh);
-        
         class RefreshListener implements View.OnClickListener {
-        	
-        	private MapActivity mapActivity;
-        	
+        	private MapActivity mapActivity;	
         	public RefreshListener(MapActivity mapActivity) {
         		this.mapActivity = mapActivity;
         	}
-        	
     	    public void onClick(View v) {
 	        	boolean updateState = MapData.defaultUpdate;
 	            MapData.defaultUpdate = true;
@@ -401,32 +355,16 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
 	            MapData.defaultUpdate = updateState;
     	    }
         }
-        
+        Button refreshBtn = (Button)findViewById(R.id.mapview_btn_refresh);
         refreshBtn.setOnClickListener(new RefreshListener(mapActivity));
     }
     
     private void setupMapLegend() {
         legend = (ListView)findViewById(R.id.mapview_legend_list);
-        updateMapLegend();
+        new UpdateLegendTask(this, map, legend).execute(MapData.data);
     }
     
-    private void updateMapLegend() {
-        // TODO find a more efficient way to not display unchecked elements in legend
-        List<RouteListEntry> checkedOnly = new ArrayList<RouteListEntry>(MapData.data.size());
-        List<RouteListEntry> anonymous = new ArrayList<RouteListEntry>(MapData.data.size());
-        for (RouteListEntry e : MapData.data) {
-            if (e.isChecked == true) {
-                if (e.isFriend == true) {
-                    checkedOnly.add(e);
-                } else {
-                    anonymous.add(e);
-                }
-            }
-        }
-        checkedOnly.addAll(anonymous);
-        // Add Data to list
-        legend.setAdapter(new MapLegendListAdapter(this, R.layout.maplegend_entry, map, checkedOnly));
-    }
+
     
     private void setupMapView() {
         this.map = (MapView) findViewById(R.id.mapview_view_map);
@@ -448,20 +386,21 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
    
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch(requestCode) {
-        case SHOWROUTESREQUEST: if (resultCode == Activity.RESULT_OK) {
-                                    updateRoutes();
-                                    MapData.lastActive = R.id.mapview_radio_custom;
-                                } else {
-                                    ((RadioButton)findViewById(MapData.lastActive)).setChecked(true);
-                                }
-                                break;
+        case SHOWROUTESREQUEST: 
+            if (resultCode == Activity.RESULT_OK) {
+                updateDisplay();
+                MapData.lastActive = R.id.mapview_radio_custom;
+            } else {
+                ((RadioButton)findViewById(MapData.lastActive)).setChecked(true);
+            }
+            break;
         }
     }
 
 	@Override
 	public void onDatabaseChange(Vector<Pair<String, GeoPoint[]>> newData) {
 		if (MapData.defaultUpdate == true) {
-			update(true, newData);
+		    update(true, newData);
 		}
 	}
 
