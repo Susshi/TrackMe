@@ -25,8 +25,6 @@ import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.ContactInfo;
 import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.interfaces.DatabaseListener;
-import de.androidlab.trackme.listeners.BackButtonListener;
-import de.androidlab.trackme.listeners.HomeButtonListener;
 import de.androidlab.trackme.map.RouteListEntry;
 import de.androidlab.trackme.map.tasks.UpdateLegendTask;
 import de.androidlab.trackme.map.tasks.UpdateRoutesTask;
@@ -75,27 +73,12 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.mapview);
-
-        // Home Button Events
-        Button homeBtn = (Button)findViewById(R.id.mapview_btn_home);             
-        homeBtn.setOnClickListener(new HomeButtonListener(this));
-        
-        // Back Button Events
-        Button backBtn = (Button)findViewById(R.id.mapview_btn_back);             
-        backBtn.setOnClickListener(new BackButtonListener(this));
-        
-        // Refresh Button
-        setupRefreshButton(this);
        
         // Force update Button
         setupForceUpdateButton(this);
         
         // Edit defaults Button
         setupEditDefaultsButton();
-        
-        // Toggle Buttons
-        setupToggleLegendButton();
-        setupToggleSettingsButton();
         
         // Radio Buttons
         setupCustomRadioButton();
@@ -366,49 +349,6 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
                 map.setSatellite(isChecked);
             }
         }); 
-    }
-    
-    private void setupToggleLegendButton() {
-        ToggleButton legendBtn = (ToggleButton)findViewById(R.id.mapview_btn_legend);
-        legendBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked == true) {
-                    findViewById(R.id.mapview_legend).setVisibility(View.VISIBLE);
-                } else {
-                    findViewById(R.id.mapview_legend).setVisibility(View.GONE);
-                }
-            }
-        }); 
-    }
-    
-    private void setupToggleSettingsButton() {
-        ToggleButton settingsBtn = (ToggleButton)findViewById(R.id.mapview_btn_settings);
-        settingsBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked == true) {
-                    findViewById(R.id.mapview_settings).setVisibility(View.VISIBLE);
-                } else {
-                    findViewById(R.id.mapview_settings).setVisibility(View.GONE);
-                }
-            }
-        }); 
-    }
-
-    private void setupRefreshButton(MapActivity mapActivity) {
-        class RefreshListener implements View.OnClickListener {
-        	private MapActivity mapActivity;	
-        	public RefreshListener(MapActivity mapActivity) {
-        		this.mapActivity = mapActivity;
-        	}
-    	    public void onClick(View v) {
-	        	boolean updateState = MapData.defaultUpdate;
-	            MapData.defaultUpdate = true;
-	            TrackMeActivity.db.registerDatabaseListener(mapActivity);
-	            MapData.defaultUpdate = updateState;
-    	    }
-        }
-        Button refreshBtn = (Button)findViewById(R.id.mapview_btn_refresh);
-        refreshBtn.setOnClickListener(new RefreshListener(mapActivity));
     }
     
     private void setupMapLegend() {

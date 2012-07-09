@@ -13,8 +13,6 @@ import android.widget.CheckBox;
 import android.widget.ListView;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.MapData;
-import de.androidlab.trackme.listeners.BackButtonListener;
-import de.androidlab.trackme.listeners.HomeButtonListener;
 import de.androidlab.trackme.map.RouteListAdapter;
 import de.androidlab.trackme.map.RouteListEntry;
 
@@ -26,12 +24,6 @@ public class RouteListActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.routelist);
         
-        // Home Button Events
-        Button homeBtn = (Button)findViewById(R.id.routelist_btn_home);             
-        homeBtn.setOnClickListener(new HomeButtonListener(this));
-        // Back Button Events
-        Button backBtn = (Button)findViewById(R.id.routelist_btn_back);             
-        backBtn.setOnClickListener(new BackButtonListener(this));
         // Ok Button Events
         Button okBtn = (Button)findViewById(R.id.routelist_btn_ok);             
         okBtn.setOnClickListener(new View.OnClickListener() { 

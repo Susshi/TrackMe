@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -13,8 +12,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.MapData;
-import de.androidlab.trackme.listeners.BackButtonListener;
-import de.androidlab.trackme.listeners.HomeButtonListener;
 
 public class SettingsMapTabActivity extends Activity {
     
@@ -23,13 +20,6 @@ public class SettingsMapTabActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.settings_map_tab);
-        
-        // Home Button Events
-        Button homeBtnPrivacy = (Button)findViewById(R.id.settings_map_btn_home);             
-        homeBtnPrivacy.setOnClickListener(new HomeButtonListener(this));
-        // Back Button Events
-        Button backBtnPrivacy = (Button)findViewById(R.id.settings_map_btn_back);             
-        backBtnPrivacy.setOnClickListener(new BackButtonListener(this));
         
         setupShowAll();
         setupShowFriends();

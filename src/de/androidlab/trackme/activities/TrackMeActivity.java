@@ -11,7 +11,6 @@ import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.db.LocationDatabase;
 import de.androidlab.trackme.dtn.LocalDTNClient;
-import de.androidlab.trackme.listeners.HomeButtonListener;
 import de.androidlab.trackme.listeners.TrackMeLocationListener;
 
 public class TrackMeActivity extends Activity {
@@ -45,20 +44,15 @@ public class TrackMeActivity extends Activity {
                 startActivity(new Intent(TrackMeActivity.this, SettingsActivity.class));
             }
         });
-        
-        // Home Button Events
-        Button homeBtn = (Button)findViewById(R.id.main_btn_home);             
-        homeBtn.setOnClickListener(new HomeButtonListener(this));
-        
-        
+
         MapData.init(this, getSharedPreferences("TrackMeActivity", 0));
         
         // Setup / open database
         db.init(getBaseContext());
         
         // DTN starten
-//        dtnclient = new LocalDTNClient(db);
-//        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
+        dtnclient = new LocalDTNClient(db);
+        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
         
         // Setup location callbacks
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);

@@ -34,70 +34,5 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         layout="@layout/mapview_settings" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:gravity="center" >
-
-        <ToggleButton
-            android:id="@+id/mapview_btn_legend"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_menu_legend"
-            android:text="@string/empty"
-            android:textOff=" "
-            android:textOn=" " />
-
-        <ToggleButton
-            android:id="@+id/mapview_btn_settings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_menu_settings"
-            android:text="@string/empty"
-            android:textOff=" "
-            android:textOn=" "/>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center" >
-
-            <Button
-                android:id="@+id/mapview_btn_home"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/ic_menu_home"
-                android:text="@string/empty" />
-
-            <Button
-                android:id="@+id/mapview_btn_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:background="@drawable/ic_menu_back"
-                android:text="@string/empty" />
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/mapview_btn_placeholder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="@drawable/ic_menu_placeholder"
-            android:text="@string/empty"
-            android:visibility="invisible" />
-
-        <Button
-            android:id="@+id/mapview_btn_refresh"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:background="@drawable/ic_menu_refresh"
-            android:text="@string/empty" />
-    </LinearLayout>
 
 </LinearLayout>
