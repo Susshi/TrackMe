@@ -57,8 +57,8 @@ public class TrackMeActivity extends Activity {
         db.init(getBaseContext());
         
         // DTN starten
-        dtnclient = new LocalDTNClient(db);
-        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
+//        dtnclient = new LocalDTNClient(db);
+//        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
         
         // Setup location callbacks
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);

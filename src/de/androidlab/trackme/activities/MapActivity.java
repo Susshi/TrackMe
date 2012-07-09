@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Pair;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -67,6 +68,7 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
     private List<RouteListEntry> toRemove = new LinkedList<RouteListEntry>();
     private List<RouteListEntry> toAdd = new LinkedList<RouteListEntry>();
     private ListView legend;
+    private int settingsVisibility = View.GONE;
     
     /** Called when the activity is first created. */
     @Override
@@ -84,12 +86,16 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         
         // Refresh Button
         setupRefreshButton(this);
+       
+        // Force update Button
+        setupForceUpdateButton(this);
+        
+        // Edit defaults Button
+        setupEditDefaultsButton();
         
         // Toggle Buttons
         setupToggleLegendButton();
         setupToggleSettingsButton();
-        setupToggleTrafficButton();
-        setupToggleSatteliteButton();
         
         // Radio Buttons
         setupCustomRadioButton();
@@ -98,6 +104,9 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         
         // Checkboxes
         setupFollowCheckbox();
+        setupLegendCheckbox();
+        setupTrafficCheckbox();
+        setupSatelliteCheckbox();
         
         // Map
         setupMapView();
@@ -128,15 +137,18 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         }
         
         if (MapData.traffic == true) {
-            ((ToggleButton)findViewById(R.id.mapview_btn_traffic)).setChecked(true);
+            ((ToggleButton)findViewById(R.id.mapview_checkbox_traffic)).setChecked(true);
             map.setTraffic(true);
         }
         if (MapData.satellite == true) {
-            ((ToggleButton)findViewById(R.id.mapview_btn_sattelite)).setChecked(true);
+            ((ToggleButton)findViewById(R.id.mapview_checkbox_satellite)).setChecked(true);
             map.setSatellite(true);
         }
         if (MapData.followActive == true) {
             ((CheckBox)findViewById(R.id.mapview_checkbox_follow)).setChecked(true);
+        }
+        if (MapData.showLegend == true) {
+            ((CheckBox)findViewById(R.id.mapview_checkbox_legend)).setChecked(true);
         }
     }
     
@@ -239,6 +251,32 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         return true;
     }
     
+    private void setupForceUpdateButton(MapActivity mapActivity) {
+        class RefreshListener implements View.OnClickListener {
+            private MapActivity mapActivity;    
+            public RefreshListener(MapActivity mapActivity) {
+                this.mapActivity = mapActivity;
+            }
+            public void onClick(View v) {
+                boolean updateState = MapData.defaultUpdate;
+                MapData.defaultUpdate = true;
+                TrackMeActivity.db.registerDatabaseListener(mapActivity);
+                MapData.defaultUpdate = updateState;
+            }
+        }
+        Button updateBtn = (Button)findViewById(R.id.mapview_btn_update);
+        updateBtn.setOnClickListener(new RefreshListener(mapActivity));
+    }
+    
+    private void setupEditDefaultsButton() {
+        Button editBtn = (Button) findViewById(R.id.mapview_btn_editdefault);
+        editBtn.setOnClickListener(new View.OnClickListener() {
+           public void onClick(View v) {
+               startActivity(new Intent(MapActivity.this, SettingsMapTabActivity.class));
+           } 
+        });
+    }
+    
     private void setupCustomRadioButton() {
         RadioButton customBtn = (RadioButton)findViewById(R.id.mapview_radio_custom);
         customBtn.setOnClickListener(new View.OnClickListener() {
@@ -296,9 +334,23 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         });
     }
     
-    private void setupToggleTrafficButton() {
-        ToggleButton trafficBtn = (ToggleButton)findViewById(R.id.mapview_btn_traffic);
-        trafficBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    private void setupLegendCheckbox() {
+        CheckBox legendBox = (CheckBox)findViewById(R.id.mapview_checkbox_legend);    
+        legendBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                MapData.showLegend = isChecked;
+                if (isChecked == true) {
+                    findViewById(R.id.mapview_legend).setVisibility(View.VISIBLE);
+                } else {
+                    findViewById(R.id.mapview_legend).setVisibility(View.GONE);
+                }
+            }
+        });
+    }
+    
+    private void setupTrafficCheckbox() {
+        CheckBox trafficBox = (CheckBox)findViewById(R.id.mapview_checkbox_traffic);
+        trafficBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MapData.traffic = isChecked;
                 map.setTraffic(isChecked);
@@ -306,9 +358,9 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         }); 
     }
     
-    private void setupToggleSatteliteButton() {
-        ToggleButton satteliteBtn = (ToggleButton)findViewById(R.id.mapview_btn_sattelite);
-        satteliteBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+    private void setupSatelliteCheckbox() {
+        CheckBox satelliteBox = (CheckBox)findViewById(R.id.mapview_checkbox_satellite);
+        satelliteBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MapData.satellite = isChecked;
                 map.setSatellite(isChecked);
@@ -364,8 +416,6 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         new UpdateLegendTask(this, map, legend).execute(MapData.data);
     }
     
-
-    
     private void setupMapView() {
         this.map = (MapView) findViewById(R.id.mapview_view_map);
         map.setBuiltInZoomControls(true);
@@ -407,6 +457,21 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
 	@Override
 	public void onDatabaseChangeRaw(Vector<String> data) {
 
+	}
+	
+	@Override
+	public boolean onKeyDown(int keycode, KeyEvent e) {
+	    switch(keycode) {
+	        case KeyEvent.KEYCODE_MENU:
+	            if (settingsVisibility == View.GONE) {
+	                settingsVisibility = View.VISIBLE;
+	            } else {
+	                settingsVisibility = View.GONE;
+	            }
+	            findViewById(R.id.mapview_settings).setVisibility(settingsVisibility);
+	            return true;
+	    }
+	    return super.onKeyDown(keycode, e);
 	}
        
 

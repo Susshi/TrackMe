@@ -4,24 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
+
     <ScrollView
         android:id="@+id/ScrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" >
+        android:layout_height="wrap_content" >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/defaultSettings"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
 
             <RadioGroup
                 android:id="@+id/RadioGroup01"
@@ -52,6 +44,12 @@
                     android:layout_weight="1"
                     android:text="@string/friends" />
             </RadioGroup>
+
+            <CheckBox
+                android:id="@+id/settings_map_checkbox_legend"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/showlegend" />
 
             <CheckBox
                 android:id="@+id/settings_map_checkbox_follow"

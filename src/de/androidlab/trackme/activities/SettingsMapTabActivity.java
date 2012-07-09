@@ -34,6 +34,7 @@ public class SettingsMapTabActivity extends Activity {
         setupShowAll();
         setupShowFriends();
         setupFollow();
+        setupShowLegend();
         setupUpdate();
         setupTraffic();
         setupSatellite();
@@ -101,6 +102,16 @@ public class SettingsMapTabActivity extends Activity {
         followBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MapData.defaultFollow = isChecked;
+            }
+        });
+    }
+    
+    private void setupShowLegend() {
+        CheckBox followBox = (CheckBox)findViewById(R.id.settings_map_checkbox_legend);
+        followBox.setChecked(MapData.defaultShowLegend);
+        followBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                MapData.defaultShowLegend = isChecked;
             }
         });
     }

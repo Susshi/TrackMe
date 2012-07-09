@@ -19,8 +19,7 @@ public class MapData {
     public static boolean traffic;
     public static boolean satellite;
     public static boolean followActive;
-    
-    public static boolean useDefaults = true;
+    public static boolean showLegend;
     
     public static boolean defaultUpdate = true;
     public static boolean defaultFollow = true;
@@ -29,6 +28,7 @@ public class MapData {
     public static boolean defaultSatellite = false;
     public static boolean defaultTraffic = false;
     public static int defaultSetting = R.id.mapview_radio_friends;
+    public static boolean defaultShowLegend = true;
     
     public static void init(Context context, SharedPreferences pref) {
         contacts.init(context);
@@ -41,6 +41,7 @@ public class MapData {
         pref.putBoolean("default_antialiasing", defaultAntialiasing);
         pref.putBoolean("default_satellite", defaultSatellite);
         pref.putBoolean("default_traffic", defaultTraffic);
+        pref.putBoolean("default_show_legend", defaultShowLegend);
         pref.putInt("default_stroke_width", defaultStrokeWidth);
         pref.putInt("default_setting", defaultSetting);
         pref.commit();
@@ -57,6 +58,8 @@ public class MapData {
             satellite = defaultSatellite;
             defaultTraffic = pref.getBoolean("default_traffic", defaultTraffic);
             traffic = defaultTraffic;
+            defaultShowLegend = pref.getBoolean("default_show_legend", defaultShowLegend);
+            showLegend = defaultShowLegend;
             defaultStrokeWidth = pref.getInt("default_stroke_width", defaultStrokeWidth);
             defaultSetting = pref.getInt("default_setting", defaultSetting);
             lastActive = defaultSetting;

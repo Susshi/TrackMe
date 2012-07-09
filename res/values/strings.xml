@@ -13,7 +13,7 @@
     <string name="all">All</string>
     <string name="friends">Friends</string>
     <string name="custom">Custom</string>
-    <string name="follow">Follow own position</string>
+    <string name="follow">Update position</string>
     <string name="show">Show</string>
     <string name="types">Types</string>
     <string name="traffic">Traffic</string>
@@ -22,5 +22,8 @@
     <string name="update">Update automatically</string>
     <string name="antialiasing">Antialiasing</string>
     <string name="strokewidth">Stroke width</string>
+    <string name="showlegend">Show legend</string>
+    <string name="forceupdate">Force update</string>
+    <string name="editdefaultsettings">Edit default settings</string>
 
 </resources>
