@@ -28,7 +28,7 @@ public class TrackMeLocationListener implements LocationListener {
 	 */
 	@Override
 	public void onLocationChanged(Location newLocation) {
-		if(useGPS & newLocation.getProvider().equals(LocationManager.NETWORK_PROVIDER)) // USE GPS only if possible
+		if(useGPS && newLocation.getProvider() != null && newLocation.getProvider().equals(LocationManager.NETWORK_PROVIDER)) // USE GPS only if possible
 			return;
 		
 		Log.i("DATABASE","New Position: Lat: " + Double.toString(newLocation.getLatitude()) + "Long: " + Double.toString(newLocation.getLongitude()));
