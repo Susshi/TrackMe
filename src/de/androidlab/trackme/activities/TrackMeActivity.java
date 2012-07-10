@@ -63,11 +63,16 @@ public class TrackMeActivity extends Activity {
         // Setup location callbacks
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         TrackMeLocationListener locationListener = new TrackMeLocationListener(db, getBaseContext());
+<<<<<<< HEAD
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
         
         // bereits gestartet
         initialized = true;
+=======
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, TrackMeLocationListener.networkMinTime, TrackMeLocationListener.networkMinDistance, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, TrackMeLocationListener.gpsMinTime, TrackMeLocationListener.gpsMinDistance, locationListener);
+>>>>>>> 5b9f4da21a95097788893e61763ca510a3b61331
     }
 
     @Override
