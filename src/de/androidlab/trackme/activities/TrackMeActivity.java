@@ -14,10 +14,6 @@ import de.androidlab.trackme.dtn.LocalDTNClient;
 import de.androidlab.trackme.listeners.TrackMeLocationListener;
 
 public class TrackMeActivity extends Activity {
-	
-	TrackMeActivity() {
-		initialized = false;
-	}
 
     /** Called when the activity is first created. */
     @Override
@@ -81,5 +77,5 @@ public class TrackMeActivity extends Activity {
     
     public LocalDTNClient dtnclient;
     public static LocationDatabase db = new LocationDatabase();
-    private boolean initialized;
+    private boolean initialized = false;
 }
