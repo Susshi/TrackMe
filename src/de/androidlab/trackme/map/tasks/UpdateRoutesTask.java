@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.graphics.Paint;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -34,7 +35,7 @@ public class UpdateRoutesTask extends AsyncTask<List<RouteListEntry>, Pair<Boole
             int newEntries = params[1].size();
             int oldEntries = params[0].size();
             // Remove
-            for (RouteListEntry e : params[0]) {
+            for (RouteListEntry e : params[2]) {
                 Pair<Boolean, RouteListEntry> route = new Pair<Boolean, RouteListEntry>(true, e);
                 publishProgress(route);
             }
@@ -86,11 +87,15 @@ public class UpdateRoutesTask extends AsyncTask<List<RouteListEntry>, Pair<Boole
         LineOverlay line = new LineOverlay(e.coords, paint, map.getProjection());
         e.line = line;
         map.getOverlays().add(e.line);
+        Log.d("GUI", "Drawing line");
+        Log.d("GUI", "Number of lines:" + map.getOverlays().size());
     }
 
     private void removeRoute(RouteListEntry e) {
         if (e.line != null) {
             map.getOverlays().remove(e.line);
+            Log.d("GUI", "Drawing line");
+            Log.d("GUI", "Number of lines:" + map.getOverlays().size());
             e.line = null;  
         }
     }
