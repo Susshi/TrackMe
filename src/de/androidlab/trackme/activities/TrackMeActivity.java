@@ -14,6 +14,10 @@ import de.androidlab.trackme.dtn.LocalDTNClient;
 import de.androidlab.trackme.listeners.TrackMeLocationListener;
 
 public class TrackMeActivity extends Activity {
+	
+	TrackMeActivity() {
+		initialized = false;
+	}
 
     /** Called when the activity is first created. */
     @Override
@@ -50,15 +54,20 @@ public class TrackMeActivity extends Activity {
         // Setup / open database
         db.init(getBaseContext());
         
-        // DTN starten
-        dtnclient = new LocalDTNClient(db);
-        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
+        // DTN starten - nur wenn nicht bereits passiert
+        if(initialized) {
+	        dtnclient = new LocalDTNClient(db);
+	        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
+        }
         
         // Setup location callbacks
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         TrackMeLocationListener locationListener = new TrackMeLocationListener(db, getBaseContext());
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, locationListener);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+        
+        // bereits gestartet
+        initialized = true;
     }
 
     @Override
@@ -70,4 +79,5 @@ public class TrackMeActivity extends Activity {
     
     public LocalDTNClient dtnclient;
     public static LocationDatabase db = new LocationDatabase();
+    private boolean initialized;
 }
