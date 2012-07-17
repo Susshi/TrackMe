@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import de.androidlab.trackme.db.LocationDatabase;
+import de.androidlab.trackme.data.SettingsData;
 import de.tubs.ibr.dtn.api.Block;
 import de.tubs.ibr.dtn.api.Bundle;
 import de.tubs.ibr.dtn.api.CallbackMode;
@@ -34,44 +35,46 @@ import de.tubs.ibr.dtn.api.ServiceNotAvailableException;
 import de.tubs.ibr.dtn.api.SessionDestroyedException;
 import de.tubs.ibr.dtn.api.SingletonEndpoint;
 
+
+/**
+ * Class for DTN communication.
+ * Its not designed for reuse and works only within the TrackMe application.
+ * Especially in combination with the LocationDatabase.
+ * {@link LocationDatabase}
+ * {@author Christian Brümmer}
+ */
+
 public class LocalDTNClient {
 	
-	// valid package types
+	/**
+	 * Enumeration for package identification.
+	 */
 	enum PacketType
 	{
 		PRESENCE,
 		DATA
 	}
 	
-	// global tag for LogCat
+	// Global tag for LogCat
 	private final static String LOGTAG = "LocalDTNClient";
 	
-	// size of type identification in header
+	// Size of type identification in header
 	private final static int HEADER_TYPE_SIZE = 4;
-	// size of the payload length information
+	// Size of the payload length information
 	private final static int HEADER_LENGTH_SIZE = 4;
-	// entire header size
+	// Entire header size
 	private final static int HEADER_SIZE = HEADER_TYPE_SIZE + HEADER_LENGTH_SIZE;
-	// 15 minutes default retransmission time
-	private final static int DEFAULT_RETRANSMISSION_TIME = 1000 * 60 * 1;
-	// default presence notification delay - 5 seconds
-	private final static int DEFAULT_PRESENCE_NOTIFICATION_DELAY = 1000 * 5;
-	// default presence ttl - 5 seconds
-	private final static int DEFAULT_PRESENCE_TTL = 1000;
-	// default data ttl - 120 seconds
-	private final static int DEFAULT_DATA_TTL = 1000;
 	
-	private int mRetransmissionTime, mPresenceNotificationDelay, mPresenceTTL, mDataTTL;
-	// global package name
+	// Global package name
 	private String mPackageName = getClass().getPackage().getName();
 	
 	// DTN-GroupEndpoint name for presence notification
 	public static final GroupEndpoint PRESENCE_GROUP_ID = new GroupEndpoint("dtn://trackme.dtn/presence");
 	
-	// application context
+	// Application context
 	private Context mContext = null;
 	
-	// executor to process local job queue
+	// Executor to process local job queue
 	private ExecutorService mExecutor = null;
 	
 	// DTN-client to talk with the DTN service
@@ -84,24 +87,36 @@ public class LocalDTNClient {
 	PresenceTimerTask mTask = new PresenceTimerTask();
 	Timer mTimer = new Timer();
 	
-	// presence organization
+	// Presence organization
 	Map<String, Long> mPresenceMap = new HashMap<String, Long>();
 	
-	// first time init flag
-	boolean mInit;
+	// First time init flag
+	boolean mInit, mClosed;
 	
+	/**
+	 * Creates client for dtn communication.
+	 * @param db reference to LocationDatabase for data exchange
+	 */
 	public LocalDTNClient(LocationDatabase db)
 	{
 		mInit = false;
+		mClosed = false;
 		mLocationDatabase = db;
 	}
 	
+	/**
+	 * Class which extends DTNClient and overwrite methods for communication.
+	 */
 	protected class LDTNClient extends DTNClient {
 		
 		public LDTNClient() {
 			super(mPackageName);
 		}
 
+		/**
+		 * Callback for sessionConnected event.
+		 * @param session reference to DTN Session
+		 */
 		@Override
 		protected void sessionConnected(Session session) {
 			Log.d(LOGTAG, "DTN session connected");
@@ -110,16 +125,27 @@ public class LocalDTNClient {
 	        mExecutor.execute(mQueryTask);
 		}
 
+		/**
+		 * Callback for sessionMode configuration. Used the set the client CallbackMode.
+		 * @param db reference to LocationDatabase for data exchange
+		 */
 		@Override
 		protected CallbackMode sessionMode() {
 			return CallbackMode.SIMPLE;
 		}
-
+		
+		/**
+		 * Callback for DTNClient online event.
+		 */
 		@Override
 		protected void online() {
 			Log.i(LOGTAG, "DTN is online.");
 		}
 
+		/**
+		 * Callback for DTNClient.
+		 * @param db reference to LocationDatabase for data exchange
+		 */
 		@Override
 		protected void offline() {
 			Log.i(LOGTAG, "DTN is offline.");
@@ -127,6 +153,11 @@ public class LocalDTNClient {
 		
 	};
 	
+	/**
+	 * The anonymous class extends BroadcastReceiver for receiving DTN intents.
+	 * If an intent is received a executor thread (mQueryTask) will be queued in the SingleThreadExecutor.
+	 * Have a look on the mQueryTask object.
+	 */
 	private BroadcastReceiver mReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
@@ -142,6 +173,11 @@ public class LocalDTNClient {
 		}
 	};
 	
+	/**
+	 * The anonymous class extends Runnable and is for querying the DTNClient after an DTN intent is received.
+	 * It will query the DTNClient until all data is read or an exception is thrown.
+	 * Have a look on the mReceiver object.
+	 */
 	private Runnable mQueryTask = new Runnable() {
 		@Override
 		public void run() {
@@ -156,32 +192,21 @@ public class LocalDTNClient {
 		}
 	};
 	
-	public void setPresenceTTL(int time) {	// in seconds
-		mPresenceTTL = time;
-	}
-	
-	
-	public void setDataTTL(int time) { // in seconds
-		mDataTTL = time;
-	}
-		
-	public void setRetransmissionTime(int time)	// in minutes
-	{
-		mRetransmissionTime = 1000 * 60 * time;
-	}
-	
-	public void setPresenceNotificationDelay(int time) // in milliseconds
-	{
-		mPresenceNotificationDelay = time;
-	}
-	
-	public void init(Context context, String packageName) {
+	/**
+	 * This method will initialize the whole DTNClient and register a BroadcastReiver for DTN intents.
+	 * A new SingleThreadExecutor will be created to manage and queue all DTN tasks.
+	 * A GroupEndpoint will be created for the presence communication messages.
+	 * A data handle for incoming bundles will be created and attached.
+	 * A presence notification timer is created and started.
+	 * If the DTN-daemon is not running the initializing will fail. 
+	 * @param context reference to the major application context
+	 * @param packageName package name for DTN intent registration
+	 * @return true if nothing goes wrong
+	 */
+	public boolean init(Context context, String packageName) {
 		Log.i(LOGTAG, "INIT DTN");
-		if(mInit) return;
-		mRetransmissionTime = DEFAULT_RETRANSMISSION_TIME;
-		mPresenceNotificationDelay = DEFAULT_PRESENCE_NOTIFICATION_DELAY;
-		mPresenceTTL = DEFAULT_PRESENCE_TTL;
-		mDataTTL = DEFAULT_DATA_TTL;
+		if(mInit) return true; 
+
 		mPackageName = packageName;
         mContext = context;
         // create a new executor
@@ -208,14 +233,23 @@ public class LocalDTNClient {
 			Log.i("LocalDTNClient", "Client successful initialized");
 		} catch (ServiceNotAvailableException e) {
 			showInstallServiceDialog(context);
+			return false;
 		}
 		
 		// start presence notification timer
-		mTimer.scheduleAtFixedRate(mTask, mPresenceNotificationDelay, mPresenceNotificationDelay);
+		mTimer.scheduleAtFixedRate(mTask, 0, SettingsData.default_presence_notification_delay);
         mInit = true;
+        mClosed = false;
 		Log.d(LOGTAG, "DTN-Client created");
+		return true;
     }
 
+	/**
+	 * 
+	 * @param context reference to the major application context
+	 * @param packageName package name for DTN intent registration
+	 * @return true if nothing goes wrong
+	 */
 	private void showInstallServiceDialog(final Context context) {
 		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
@@ -243,6 +277,7 @@ public class LocalDTNClient {
 	
 	public void close(Context context)
 	{
+		if(mClosed) return;
 		mTimer.cancel();
 		mTimer.purge();
 		
@@ -272,6 +307,7 @@ public class LocalDTNClient {
 		mExecutor = null;
 		mClient = null;
 		mInit = false;
+		mClosed = true;
 	}
 
    private DataHandler mHandler = new DataHandler() {
@@ -352,7 +388,7 @@ public class LocalDTNClient {
 					Log.d(LOGTAG, "processIncomingMessage: new endpoint");
 				}
 				Log.d(LOGTAG, "processIncomingMessage: time elapsed: " + (currentTime - mPresenceMap.get(srcEndpoint)));
-				if((currentTime - mPresenceMap.get(srcEndpoint)) > mRetransmissionTime)
+				if((currentTime - mPresenceMap.get(srcEndpoint)) > SettingsData.default_retransmission_time)
 				{
 					Log.d(LOGTAG, "processIncomingMessage: time elapsed !");
 					// update time
@@ -361,7 +397,7 @@ public class LocalDTNClient {
 					// send data to endpoint!
 					
 					Vector<String> strings = mLocationDatabase.getDatabaseAsStrings();	// getting string vector
-
+					if(strings.size() == 0) return;
 					String result = new String();
 					for(int i = 0; i < strings.size(); i++)
 					{
@@ -383,7 +419,7 @@ public class LocalDTNClient {
 					
 					Log.d(LOGTAG, result);
 					try {
-						if(sendMessage(p, srcEndpoint, mDataTTL))
+						if(sendMessage(p, srcEndpoint, SettingsData.default_data_ttl))
 							Log.d(LOGTAG, "Message sent!");
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -448,9 +484,9 @@ public class LocalDTNClient {
 			bb.get(payload);
 			
 			try {
-				if(!sendMessage(payload, PRESENCE_GROUP_ID.toString(), mPresenceTTL))
+				if(!sendMessage(payload, PRESENCE_GROUP_ID.toString(), SettingsData.default_presence_ttl))
 					Log.d(LOGTAG, "Could not send presence notification!");
-				Log.d(LOGTAG, "Presence notification sent!" + PRESENCE_GROUP_ID.toString() + " TTL: " + mPresenceTTL);
+				Log.d(LOGTAG, "Presence notification sent!" + PRESENCE_GROUP_ID.toString() + " TTL: " + SettingsData.default_presence_ttl);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				Log.d(LOGTAG, "PRESENCE send exception");

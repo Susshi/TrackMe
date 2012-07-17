@@ -23,8 +23,8 @@ class LocationDatabaseOpenHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		try {
 			db.execSQL("CREATE TABLE IF NOT EXISTS locations(" +
-			"hash TEXT NOT NULL, latitude REAL NOT NULL, longitude REAL NOT NULL, " +
-			"expirationDate INTEGER NOT NULL, timestamp INTEGER NOT NULL, PRIMARY KEY(hash, timestamp))");
+					"hash TEXT NOT NULL, latitude REAL NOT NULL, longitude REAL NOT NULL, " +
+					"expirationDate INTEGER NOT NULL, timestamp INTEGER PRIMARY KEY NOT NULL)");
 		}
 		catch(SQLException e) {
 			Log.e("DATABASE", e.getLocalizedMessage());
