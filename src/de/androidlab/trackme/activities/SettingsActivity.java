@@ -19,20 +19,14 @@ public class SettingsActivity extends TabActivity {
         Resources res = getResources();
         TabHost tabHost = getTabHost();
         
-        // ----- General Tab -----
+        // ----- DTN Tab -----
         TabHost.TabSpec general = tabHost.newTabSpec("tab1");
-        general.setIndicator("General", res.getDrawable(R.drawable.ic_menu_settings));
-        general.setContent(new Intent(SettingsActivity.this, SettingsGeneralTabActivity.class));
+        general.setIndicator("DTN", res.getDrawable(R.drawable.ic_menu_settings));
+        general.setContent(new Intent(SettingsActivity.this, SettingsDTNTabActivity.class));
         tabHost.addTab(general);      
-
-        // ----- Privacy Tab -----
-        TabHost.TabSpec privacy = tabHost.newTabSpec("tab2");
-        privacy.setIndicator("Privacy", res.getDrawable(R.drawable.ic_menu_privacy));
-        privacy.setContent(new Intent(SettingsActivity.this, SettingsPrivacyTabActivity.class));
-        tabHost.addTab(privacy);
         
         // ----- Map Tab -----
-        TabHost.TabSpec map = tabHost.newTabSpec("tab3");
+        TabHost.TabSpec map = tabHost.newTabSpec("tab2");
         map.setIndicator("Map", res.getDrawable(R.drawable.ic_menu_map));
         map.setContent(new Intent(SettingsActivity.this, SettingsMapTabActivity.class));
         tabHost.addTab(map);

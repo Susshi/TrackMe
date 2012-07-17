@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.MapData;
+import de.androidlab.trackme.data.SettingsData;
 import de.androidlab.trackme.db.LocationDatabase;
 import de.androidlab.trackme.dtn.LocalDTNClient;
 import de.androidlab.trackme.listeners.TrackMeLocationListener;
@@ -46,6 +47,7 @@ public class TrackMeActivity extends Activity {
         });
 
         MapData.init(this, getSharedPreferences("TrackMeActivity", 0));
+        SettingsData.init(getSharedPreferences("TrackMeActivity", 0));
         
         // Setup / open database
         db.init(getBaseContext());

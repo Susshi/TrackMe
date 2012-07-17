@@ -34,7 +34,7 @@ public class UpdateRoutesTask extends AsyncTask<List<RouteListEntry>, Pair<Boole
             int newEntries = params[1].size();
             int oldEntries = params[0].size();
             // Remove
-            for (RouteListEntry e : params[0]) {
+            for (RouteListEntry e : params[2]) {
                 Pair<Boolean, RouteListEntry> route = new Pair<Boolean, RouteListEntry>(true, e);
                 publishProgress(route);
             }

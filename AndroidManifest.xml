@@ -33,7 +33,7 @@
                   android:label="Credits"></activity>
         <activity android:name=".activities.SettingsActivity"
                   android:label="Default settings"></activity>
-        <activity android:name=".activities.SettingsGeneralTabActivity"
+        <activity android:name=".activities.SettingsDTNTabActivity"
                   android:theme="@android:style/Theme.NoTitleBar"></activity>
         <activity android:name=".activities.SettingsPrivacyTabActivity"
                   android:theme="@android:style/Theme.NoTitleBar"></activity>
