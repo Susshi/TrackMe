@@ -62,6 +62,7 @@ public class RouteListEntry {
         MapController controller = map.getController();
         if (coords.length == 1) { // animate to the location
             controller.animateTo(coords[0]);
+            map.getController().setZoom(12);
         } else {
             // find the lat, lon span
             int minLatitude = Integer.MAX_VALUE;
