@@ -170,6 +170,7 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
     }
     
     private void updateData(Vector<Pair<String, GeoPoint[]>> newData) {
+    	// TODO remove debugs
         Log.d("GUI", "Updating " + newData.size() + " entries");
         int[] points = new int[newData.size()];
         int i = 0;

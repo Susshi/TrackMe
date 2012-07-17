@@ -52,8 +52,8 @@ public class TrackMeActivity extends Activity {
         
         // DTN starten - nur wenn nicht bereits passiert
         if(!initialized) {
-	        dtnclient = new LocalDTNClient(db);
-	        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
+//	        dtnclient = new LocalDTNClient(db);
+//	        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
         }
         
         // Setup location callbacks
