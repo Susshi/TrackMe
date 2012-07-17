@@ -134,7 +134,10 @@ public class LocalDTNClient {
 			{
 				Log.d(LOGTAG, "Intent received!");
 				// RECEIVE intent received, check for new bundles
-				mExecutor.execute(mQueryTask);
+				if(mExecutor != null && mQueryTask != null)
+					mExecutor.execute(mQueryTask);
+				else
+					Log.e("ERROR", "LocalDTNClient onReceive: no executor or query task available!");
 			}
 		}
 	};
