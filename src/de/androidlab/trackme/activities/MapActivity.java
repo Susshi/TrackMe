@@ -1,5 +1,6 @@
 package de.androidlab.trackme.activities;
 
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -169,7 +170,14 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
     }
     
     private void updateData(Vector<Pair<String, GeoPoint[]>> newData) {
-        toAdd.clear();
+        Log.d("GUI", "Updating " + newData.size() + " entries");
+        int[] points = new int[newData.size()];
+        int i = 0;
+        for (Pair<String, GeoPoint[]> p : newData) {
+        	points[i++] = p.second.length;
+        }
+        Log.d("GUI", "Entries have " + Arrays.toString(points) + " points");
+    	toAdd.clear();
         toRemove.clear();
         List<RouteListEntry> visited = new LinkedList<RouteListEntry>();
         for (Pair<String, GeoPoint[]> input : newData) {
