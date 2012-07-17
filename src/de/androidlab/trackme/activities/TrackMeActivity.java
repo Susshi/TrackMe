@@ -77,5 +77,5 @@ public class TrackMeActivity extends Activity {
     
     public LocalDTNClient dtnclient;
     public static LocationDatabase db = new LocationDatabase();
-    private boolean initialized = false;
+    public static boolean initialized = false;
 }
