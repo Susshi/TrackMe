@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import de.androidlab.trackme.db.LocationDatabase;
+import de.androidlab.trackme.data.SettingsData;
 import de.tubs.ibr.dtn.api.Block;
 import de.tubs.ibr.dtn.api.Bundle;
 import de.tubs.ibr.dtn.api.CallbackMode;
@@ -33,6 +34,7 @@ import de.tubs.ibr.dtn.api.Registration;
 import de.tubs.ibr.dtn.api.ServiceNotAvailableException;
 import de.tubs.ibr.dtn.api.SessionDestroyedException;
 import de.tubs.ibr.dtn.api.SingletonEndpoint;
+
 
 /**
  * Class for DTN communication.
@@ -62,16 +64,7 @@ public class LocalDTNClient {
 	private final static int HEADER_LENGTH_SIZE = 4;
 	// Entire header size
 	private final static int HEADER_SIZE = HEADER_TYPE_SIZE + HEADER_LENGTH_SIZE;
-	// 15 minutes default retransmission time
-	private final static int DEFAULT_RETRANSMISSION_TIME = 1000 * 60 * 1;
-	// Default presence notification delay - 5 seconds
-	private final static int DEFAULT_PRESENCE_NOTIFICATION_DELAY = 1000 * 5;
-	// Default presence ttl - 5 seconds
-	private final static int DEFAULT_PRESENCE_TTL = 1000;
-	// Default data ttl - 120 seconds
-	private final static int DEFAULT_DATA_TTL = 1000;
 	
-	private int mRetransmissionTime, mPresenceNotificationDelay, mPresenceTTL, mDataTTL;
 	// Global package name
 	private String mPackageName = getClass().getPackage().getName();
 	
@@ -202,10 +195,7 @@ public class LocalDTNClient {
 	public void init(Context context, String packageName) {
 		Log.i(LOGTAG, "INIT DTN");
 		if(mInit) return; 
-		mRetransmissionTime = DEFAULT_RETRANSMISSION_TIME;
-		mPresenceNotificationDelay = DEFAULT_PRESENCE_NOTIFICATION_DELAY;
-		mPresenceTTL = DEFAULT_PRESENCE_TTL;
-		mDataTTL = DEFAULT_DATA_TTL;
+
 		mPackageName = packageName;
         mContext = context;
         // create a new executor
@@ -235,7 +225,7 @@ public class LocalDTNClient {
 		}
 		
 		// start presence notification timer
-		mTimer.scheduleAtFixedRate(mTask, mPresenceNotificationDelay, mPresenceNotificationDelay);
+		mTimer.scheduleAtFixedRate(mTask, 0, SettingsData.default_presence_notification_delay);
         mInit = true;
 		Log.d(LOGTAG, "DTN-Client created");
     }
@@ -376,7 +366,7 @@ public class LocalDTNClient {
 					Log.d(LOGTAG, "processIncomingMessage: new endpoint");
 				}
 				Log.d(LOGTAG, "processIncomingMessage: time elapsed: " + (currentTime - mPresenceMap.get(srcEndpoint)));
-				if((currentTime - mPresenceMap.get(srcEndpoint)) > mRetransmissionTime)
+				if((currentTime - mPresenceMap.get(srcEndpoint)) > SettingsData.default_retransmission_time)
 				{
 					Log.d(LOGTAG, "processIncomingMessage: time elapsed !");
 					// update time
@@ -407,7 +397,7 @@ public class LocalDTNClient {
 					
 					Log.d(LOGTAG, result);
 					try {
-						if(sendMessage(p, srcEndpoint, mDataTTL))
+						if(sendMessage(p, srcEndpoint, SettingsData.default_data_ttl))
 							Log.d(LOGTAG, "Message sent!");
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
@@ -472,9 +462,9 @@ public class LocalDTNClient {
 			bb.get(payload);
 			
 			try {
-				if(!sendMessage(payload, PRESENCE_GROUP_ID.toString(), mPresenceTTL))
+				if(!sendMessage(payload, PRESENCE_GROUP_ID.toString(), SettingsData.default_presence_ttl))
 					Log.d(LOGTAG, "Could not send presence notification!");
-				Log.d(LOGTAG, "Presence notification sent!" + PRESENCE_GROUP_ID.toString() + " TTL: " + mPresenceTTL);
+				Log.d(LOGTAG, "Presence notification sent!" + PRESENCE_GROUP_ID.toString() + " TTL: " + SettingsData.default_presence_ttl);
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				Log.d(LOGTAG, "PRESENCE send exception");
