@@ -91,7 +91,7 @@ public class LocalDTNClient {
 	Map<String, Long> mPresenceMap = new HashMap<String, Long>();
 	
 	// First time init flag
-	boolean mInit;
+	boolean mInit, mClosed;
 	
 	/**
 	 * Creates client for dtn communication.
@@ -100,6 +100,7 @@ public class LocalDTNClient {
 	public LocalDTNClient(LocationDatabase db)
 	{
 		mInit = false;
+		mClosed = false;
 		mLocationDatabase = db;
 	}
 	
@@ -191,10 +192,20 @@ public class LocalDTNClient {
 		}
 	};
 	
-	
-	public void init(Context context, String packageName) {
+	/**
+	 * This method will initialize the whole DTNClient and register a BroadcastReiver for DTN intents.
+	 * A new SingleThreadExecutor will be created to manage and queue all DTN tasks.
+	 * A GroupEndpoint will be created for the presence communication messages.
+	 * A data handle for incoming bundles will be created and attached.
+	 * A presence notification timer is created and started.
+	 * If the DTN-daemon is not running the initializing will fail. 
+	 * @param context reference to the major application context
+	 * @param packageName package name for DTN intent registration
+	 * @return true if nothing goes wrong
+	 */
+	public boolean init(Context context, String packageName) {
 		Log.i(LOGTAG, "INIT DTN");
-		if(mInit) return; 
+		if(mInit) return true; 
 
 		mPackageName = packageName;
         mContext = context;
@@ -222,14 +233,23 @@ public class LocalDTNClient {
 			Log.i("LocalDTNClient", "Client successful initialized");
 		} catch (ServiceNotAvailableException e) {
 			showInstallServiceDialog(context);
+			return false;
 		}
 		
 		// start presence notification timer
 		mTimer.scheduleAtFixedRate(mTask, 0, SettingsData.default_presence_notification_delay);
         mInit = true;
+        mClosed = false;
 		Log.d(LOGTAG, "DTN-Client created");
+		return true;
     }
 
+	/**
+	 * 
+	 * @param context reference to the major application context
+	 * @param packageName package name for DTN intent registration
+	 * @return true if nothing goes wrong
+	 */
 	private void showInstallServiceDialog(final Context context) {
 		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
@@ -257,6 +277,7 @@ public class LocalDTNClient {
 	
 	public void close(Context context)
 	{
+		if(mClosed) return;
 		mTimer.cancel();
 		mTimer.purge();
 		
@@ -286,6 +307,7 @@ public class LocalDTNClient {
 		mExecutor = null;
 		mClient = null;
 		mInit = false;
+		mClosed = true;
 	}
 
    private DataHandler mHandler = new DataHandler() {
