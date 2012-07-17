@@ -385,7 +385,7 @@ public class LocalDTNClient {
 					// send data to endpoint!
 					
 					Vector<String> strings = mLocationDatabase.getDatabaseAsStrings();	// getting string vector
-					if(strings.size() == 0) return;
+
 					String result = new String();
 					for(int i = 0; i < strings.size(); i++)
 					{

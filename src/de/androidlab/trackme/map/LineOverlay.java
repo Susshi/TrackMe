@@ -25,13 +25,18 @@ public class LineOverlay extends Overlay {
     public void draw(Canvas canvas, MapView mapView, boolean shadow) {
         super.draw(canvas, mapView, shadow);
         if (points.length > 0) {
-            Point pointNew = null;
-            Point pointOld = projection.toPixels(points[0], null);
-            for (int i = 1; i < points.length; i++) {
-                pointNew = projection.toPixels(points[i], null);
-                canvas.drawLine(pointOld.x, pointOld.y, pointNew.x, pointNew.y, paint);
-                pointOld = pointNew;
-            }
+        	if (points.length == 1) {
+        		Point pointNew = projection.toPixels(points[0], null);
+        		canvas.drawCircle(pointNew.x, pointNew.y, mapView.getZoomLevel()/3, paint);
+        	} else {
+	            Point pointNew = null;
+	            Point pointOld = projection.toPixels(points[0], null);
+	            for (int i = 1; i < points.length; i++) {
+	                pointNew = projection.toPixels(points[i], null);
+	                canvas.drawLine(pointOld.x, pointOld.y, pointNew.x, pointNew.y, paint);
+	                pointOld = pointNew;
+	            }
+        	}
         }
     }
 }
