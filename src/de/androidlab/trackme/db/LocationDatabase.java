@@ -48,10 +48,12 @@ public class LocationDatabase {
 	 * for more information about inserting. This method extracts the information
 	 * from a vector of Strings (Every String has to contain one entry) and inserts
 	 * the extracted entry if the entry is complete 
+	 * @returns True if all entries were correct, false if at least one entry was ignored (all (other)correct entries have been inserted however)
 	 */
 	public boolean insertLocations(Vector<String> entriesAsStrings)
 	{
 		boolean hasSucceeded = true;
+		boolean continueWhile = false;
 		
 		Vector<String> entries = new Vector<String>(entriesAsStrings);
 		
@@ -68,14 +70,21 @@ public class LocationDatabase {
 					if(columns[i] == null)
 					{
 						hasSucceeded = false;
-						continue;
+						continueWhile = true;
+						break;
 					}
 				}
 				catch(ArrayIndexOutOfBoundsException e)
 				{
 					hasSucceeded = false;
-					continue;
+					continueWhile = true;
+					break;
 				}
+			}
+			if(continueWhile) 
+			{
+				continueWhile = false;
+				continue;
 			}
 			
 			double lat;

@@ -87,6 +87,7 @@ public class TrackMeLocationListener implements LocationListener {
 	protected boolean isBetterLocation(Location location, Location currentBestLocation) {
 	    if (currentBestLocation == null) {
 	        // A new location is always better than no location
+	    	Log.i("Loc", "No old location -> newLocation is better");
 	        return true;
 	    }
 
@@ -99,9 +100,11 @@ public class TrackMeLocationListener implements LocationListener {
 	    // If it's been more than two minutes since the current location, use the new location
 	    // because the user has likely moved
 	    if (isSignificantlyNewer) {
+	    	Log.i("Loc", "Old location is too old -> newLocation is better");
 	        return true;
 	    // If the new location is more than two minutes older, it must be worse
 	    } else if (isSignificantlyOlder) {
+	    	Log.i("Loc", "NewLocation is more then two minutes older then oldLocation -> Old location is better");
 	        return false;
 	    }
 
@@ -117,12 +120,16 @@ public class TrackMeLocationListener implements LocationListener {
 
 	    // Determine location quality using a combination of timeliness and accuracy
 	    if (isMoreAccurate) {
+	    	Log.i("Loc", "New Location is more accurate -> newLocation is better");
 	        return true;
 	    } else if (isNewer && !isLessAccurate) {
+	    	Log.i("Loc", "New Location is equally accurate, but newer -> newLocation is better");
 	        return true;
 	    } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
-	        return true;
+	    	Log.i("Loc", "New Location is newer, from same Provider and not significantly less accurate -> newLocation is better");
+	    	return true;
 	    }
+	    Log.i("Loc", "No improvement found -> Old location is better");
 	    return false;
 	}
 
