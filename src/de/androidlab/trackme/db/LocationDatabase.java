@@ -146,6 +146,8 @@ public class LocationDatabase {
 			{
 				long row = -1;
 				try {
+					Log.i("DATABASE","Try to insert: " + toInsert.getAsString("hash") + " | " + toInsert.getAsString("latitude") + " | " + toInsert.getAsString("longitude") + " | " + 
+							toInsert.getAsString("expirationDate") + " | " + toInsert.getAsString("timestamp"));
 					row = openHelper.getWritableDatabase().insertOrThrow("locations", null, toInsert);
 				} 
 				catch (SQLException e)
