@@ -201,7 +201,7 @@ public class LocalDTNClient {
 	
 	public void init(Context context, String packageName) {
 		Log.i(LOGTAG, "INIT DTN");
-		if(mInit) return;
+		if(mInit) return; 
 		mRetransmissionTime = DEFAULT_RETRANSMISSION_TIME;
 		mPresenceNotificationDelay = DEFAULT_PRESENCE_NOTIFICATION_DELAY;
 		mPresenceTTL = DEFAULT_PRESENCE_TTL;
@@ -385,7 +385,7 @@ public class LocalDTNClient {
 					// send data to endpoint!
 					
 					Vector<String> strings = mLocationDatabase.getDatabaseAsStrings();	// getting string vector
-
+					if(strings.size() == 0) return;
 					String result = new String();
 					for(int i = 0; i < strings.size(); i++)
 					{
