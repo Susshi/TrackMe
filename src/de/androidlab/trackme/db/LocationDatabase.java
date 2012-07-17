@@ -314,7 +314,7 @@ public class LocationDatabase {
 			if(!currentHash.equals(rows.getString(0)))
 			{
 				if(!currentHash.equals("")) {
-					GeoPoint[] points = {};
+					GeoPoint[] points = new GeoPoint[currentPoints.size()];
 					currentPoints.toArray(points);
 					abstractedData.add(new Pair<String, GeoPoint[]>(currentHash, points));
 					Log.d("DATABASE","Added to Return vector: Hash:" + currentHash + " Points: "+ Arrays.toString(points));

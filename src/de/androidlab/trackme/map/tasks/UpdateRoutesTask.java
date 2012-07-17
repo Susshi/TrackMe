@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.graphics.Paint;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
@@ -30,11 +31,12 @@ public class UpdateRoutesTask extends AsyncTask<List<RouteListEntry>, Pair<Boole
     @Override
     // first = toRemove, second = toAdd, third = data
     protected Pair<Integer, Integer> doInBackground(List<RouteListEntry>... params) {
+    	Log.d("GUI", "Number of Overlays before update " + map.getOverlays().size());
         if (params.length == 3) {
             int newEntries = params[1].size();
             int oldEntries = params[0].size();
             // Remove
-            for (RouteListEntry e : params[0]) {
+            for (RouteListEntry e : params[2]) {
                 Pair<Boolean, RouteListEntry> route = new Pair<Boolean, RouteListEntry>(true, e);
                 publishProgress(route);
             }
