@@ -53,10 +53,8 @@ public class TrackMeActivity extends Activity {
         db.init(getBaseContext());
         
         // DTN starten - nur wenn nicht bereits passiert
-        if(!initialized) {
-	        dtnclient = new LocalDTNClient(db);
-	        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
-        }
+        dtnclient = new LocalDTNClient(db);
+        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
         
         // Setup location callbacks
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -71,7 +69,7 @@ public class TrackMeActivity extends Activity {
     @Override
     public void onDestroy() {
     	super.onDestroy();
-    	dtnclient.close(this);
+    	if(dtnclient != null) dtnclient.close(this);
     	db.close();
     }
     

@@ -11,9 +11,9 @@ public class SettingsData {
 	public static int default_retransmission_time = 1000 * 60 * 1;
 	// default presence notification delay - 5 seconds
 	public static int default_presence_notification_delay = 1000 * 5;
-	// default presence ttl - 5 seconds
+	// default presence ttl - 1000 seconds
 	public static int default_presence_ttl = 1000;
-	// default data ttl - 120 seconds
+	// default data ttl - 1000 seconds
 	public static int default_data_ttl = 1000;
 	
     public static void init(SharedPreferences pref) {

@@ -204,8 +204,12 @@ public class LocalDTNClient {
 	 * @return true if nothing goes wrong
 	 */
 	public boolean init(Context context, String packageName) {
-		Log.i(LOGTAG, "INIT DTN");
 		if(mInit) return true; 
+		Log.i(LOGTAG, "Initialize the DTN client ...");
+		Log.i(LOGTAG, "Retransmission time " + SettingsData.default_retransmission_time);
+		Log.i(LOGTAG, "Presence notification delay " + SettingsData.default_presence_notification_delay);
+		Log.i(LOGTAG, "Presence TTL " + SettingsData.default_presence_ttl);
+		Log.i(LOGTAG, "Data TTL " + SettingsData.default_data_ttl);
 
 		mPackageName = packageName;
         mContext = context;
@@ -230,9 +234,10 @@ public class LocalDTNClient {
         
 		try {
 			mClient.initialize(context, reg);
-			Log.i("LocalDTNClient", "Client successful initialized");
+			Log.i(LOGTAG, "... dtn client successfully initialized");
 		} catch (ServiceNotAvailableException e) {
 			showInstallServiceDialog(context);
+			Log.e(LOGTAG, "... dtn client exception", e);
 			return false;
 		}
 		
@@ -290,9 +295,6 @@ public class LocalDTNClient {
 			
 		}
 	
-		// unregister at the daemon
-		mClient.unregister();
-		
 		try {
 			// stop executor
 			mExecutor.shutdown();
@@ -300,12 +302,13 @@ public class LocalDTNClient {
 			if (!mExecutor.awaitTermination(10, TimeUnit.SECONDS)) {
 				mExecutor.shutdownNow();
 			}
-			// destroy DTN client
-			mClient.terminate();
 		} catch (InterruptedException e) {
 			Log.e(LOGTAG, "Interrupted on service destruction.", e);
 		}
-		
+		// unregister at the daemon
+		mClient.unregister();
+		// destroy DTN client
+		mClient.terminate();
 		// clear all variables
 		mExecutor = null;
 		mClient = null;

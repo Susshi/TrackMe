@@ -45,11 +45,13 @@ public class HashedIdentification {
                    String selection = Phone.CONTACT_ID + " =?"; 
                    String[] selArgs = new String[]{contact.getString(0)};
                    Cursor numbers = cr.query(Phone.CONTENT_URI, numberColumns, selection, selArgs, null);
-                   while (numbers.moveToNext()) {
-                       String number = Converter.normalizeNumber(numbers.getString(0)); 
-                       String hashedNumber = Converter.calculateHash(number);
-                    info.numbers.add(hashedNumber);
-                    map.put(hashedNumber, info);
+                   if(numbers != null) {
+	                   while (numbers.moveToNext()) {
+	                       String number = Converter.normalizeNumber(numbers.getString(0)); 
+	                       String hashedNumber = Converter.calculateHash(number);
+	                    info.numbers.add(hashedNumber);
+	                    map.put(hashedNumber, info);
+	                   }
                    }
                }
            }

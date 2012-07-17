@@ -8,7 +8,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data Retransmission Time"
+        android:text="Data Retransmission Time (milliseconds)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
@@ -25,7 +25,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Presence Notification Delay"
+        android:text="Presence Notification Delay (milliseconds)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
@@ -39,7 +39,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Presence TTL"
+        android:text="Presence TTL (seconds)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
@@ -53,7 +53,7 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data TTL"
+        android:text="Data TTL (seconds)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
