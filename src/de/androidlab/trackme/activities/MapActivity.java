@@ -7,6 +7,7 @@ import java.util.Vector;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.KeyEvent;
 import android.view.View;
@@ -114,8 +115,12 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
             ((RadioButton)findViewById(R.id.mapview_radio_custom)).setChecked(true);
             break;
                                          
-        default:                         
-            ((RadioButton)findViewById(MapData.defaultSetting)).performClick();
+        default: 
+        	try {
+        		((RadioButton)findViewById(MapData.defaultSetting)).performClick();
+        	} catch(ClassCastException e) {
+        		Log.e("MapActivity", "Default Setting for \"Show\" failed!");d
+        	}
             break;   
         }
         
