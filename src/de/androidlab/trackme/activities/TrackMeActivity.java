@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.MapData;
+import de.androidlab.trackme.data.SettingsData;
 import de.androidlab.trackme.db.LocationDatabase;
 import de.androidlab.trackme.dtn.LocalDTNClient;
 import de.androidlab.trackme.listeners.TrackMeLocationListener;
@@ -46,15 +47,14 @@ public class TrackMeActivity extends Activity {
         });
 
         MapData.init(this, getSharedPreferences("TrackMeActivity", 0));
+        SettingsData.init(getSharedPreferences("TrackMeActivity", 0));
         
         // Setup / open database
         db.init(getBaseContext());
         
         // DTN starten - nur wenn nicht bereits passiert
-        if(!initialized) {
-	        dtnclient = new LocalDTNClient(db);
-	        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
-        }
+        dtnclient = new LocalDTNClient(db);
+        dtnclient.init(getApplicationContext(), "de.androidlab.trackme");
         
         // Setup location callbacks
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
@@ -69,7 +69,7 @@ public class TrackMeActivity extends Activity {
     @Override
     public void onDestroy() {
     	super.onDestroy();
-    	dtnclient.close(this);
+    	if(dtnclient != null) dtnclient.close(this);
     	db.close();
     }
     

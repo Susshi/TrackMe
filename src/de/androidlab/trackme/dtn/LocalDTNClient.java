@@ -91,7 +91,7 @@ public class LocalDTNClient {
 	Map<String, Long> mPresenceMap = new HashMap<String, Long>();
 	
 	// First time init flag
-	boolean mInit;
+	boolean mInit, mClosed;
 	
 	/**
 	 * Creates client for dtn communication.
@@ -100,6 +100,7 @@ public class LocalDTNClient {
 	public LocalDTNClient(LocationDatabase db)
 	{
 		mInit = false;
+		mClosed = false;
 		mLocationDatabase = db;
 	}
 	
@@ -191,10 +192,24 @@ public class LocalDTNClient {
 		}
 	};
 	
-	
-	public void init(Context context, String packageName) {
-		Log.i(LOGTAG, "INIT DTN");
-		if(mInit) return; 
+	/**
+	 * This method will initialize the whole DTNClient and register a BroadcastReiver for DTN intents.
+	 * A new SingleThreadExecutor will be created to manage and queue all DTN tasks.
+	 * A GroupEndpoint will be created for the presence communication messages.
+	 * A data handle for incoming bundles will be created and attached.
+	 * A presence notification timer is created and started.
+	 * If the DTN-daemon is not running the initializing will fail. 
+	 * @param context reference to the major application context
+	 * @param packageName package name for DTN intent registration
+	 * @return true if nothing goes wrong
+	 */
+	public boolean init(Context context, String packageName) {
+		if(mInit) return true; 
+		Log.i(LOGTAG, "Initialize the DTN client ...");
+		Log.i(LOGTAG, "Retransmission time " + SettingsData.default_retransmission_time);
+		Log.i(LOGTAG, "Presence notification delay " + SettingsData.default_presence_notification_delay);
+		Log.i(LOGTAG, "Presence TTL " + SettingsData.default_presence_ttl);
+		Log.i(LOGTAG, "Data TTL " + SettingsData.default_data_ttl);
 
 		mPackageName = packageName;
         mContext = context;
@@ -219,17 +234,25 @@ public class LocalDTNClient {
         
 		try {
 			mClient.initialize(context, reg);
-			Log.i("LocalDTNClient", "Client successful initialized");
+			Log.i(LOGTAG, "... dtn client successfully initialized");
 		} catch (ServiceNotAvailableException e) {
 			showInstallServiceDialog(context);
+			Log.e(LOGTAG, "... dtn client exception", e);
+			return false;
 		}
 		
 		// start presence notification timer
 		mTimer.scheduleAtFixedRate(mTask, 0, SettingsData.default_presence_notification_delay);
         mInit = true;
+        mClosed = false;
 		Log.d(LOGTAG, "DTN-Client created");
+		return true;
     }
 
+	/**
+	 * Starts a install dialog if the DTN-Daemon is not installed on the target phone.
+	 * @param context reference to the major application context
+	 */
 	private void showInstallServiceDialog(final Context context) {
 		DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
 		    @Override
@@ -255,8 +278,14 @@ public class LocalDTNClient {
 		builder.show();
 	}
 	
+	/**
+	 * This method closes the DTNClient and all stuff initialized before.
+	 * If the init() method is not called before this does nothing.
+	 * @param context reference to the major application context
+	 */
 	public void close(Context context)
 	{
+		if(mClosed || !mInit) return;
 		mTimer.cancel();
 		mTimer.purge();
 		
@@ -266,9 +295,6 @@ public class LocalDTNClient {
 			
 		}
 	
-		// unregister at the daemon
-		mClient.unregister();
-		
 		try {
 			// stop executor
 			mExecutor.shutdown();
@@ -276,26 +302,38 @@ public class LocalDTNClient {
 			if (!mExecutor.awaitTermination(10, TimeUnit.SECONDS)) {
 				mExecutor.shutdownNow();
 			}
-			// destroy DTN client
-			mClient.terminate();
 		} catch (InterruptedException e) {
 			Log.e(LOGTAG, "Interrupted on service destruction.", e);
 		}
-		
+		// unregister at the daemon
+		mClient.unregister();
+		// destroy DTN client
+		mClient.terminate();
 		// clear all variables
 		mExecutor = null;
 		mClient = null;
 		mInit = false;
+		mClosed = true;
 	}
 
+	/**
+	 * The anonymous class extends DataHandler and is used to process incoming DTN bundles.
+	 */
    private DataHandler mHandler = new DataHandler() {
     	Bundle current;
 
+    	/**
+    	 * Callback for startBundle notification.
+    	 * @param bundle current bundle
+    	 */
 		@Override
 		public void startBundle(Bundle bundle) {
 			this.current = bundle;
 		}
 
+    	/**
+    	 * Callback for endBundle notification.
+    	 */
 		@Override
 		public void endBundle() {
 			
@@ -315,18 +353,35 @@ public class LocalDTNClient {
 			this.current = null;
 		}
 
+    	/**
+    	 * Callback for startBlock notification.
+    	 * @param bundle current block
+    	 */
 		@Override
 		public void startBlock(Block block) {
 		}
 
+    	/**
+    	 * Callback for endBlock notification.
+    	 */
 		@Override
 		public void endBlock() {
 		}
 
+    	/**
+    	 * Callback for characters.
+    	 * @param data characters
+    	 */
 		@Override
 		public void characters(String data) {
 		}
 
+    	/**
+    	 * Callback for receiving bundle payload.
+    	 * Read header informations and parse the payload and package type to processIncomingMessage() method.
+    	 * Its important to process, create and send the reply in another thread queued in the DTN executor.
+    	 * @param data whole bundle payload
+    	 */
 		@Override
 		public void payload(byte[] data) {
 			final String endpoint = current.source;
@@ -351,6 +406,13 @@ public class LocalDTNClient {
 		        }});
 		}
 		
+    	/**
+    	 * Main method for handle incoming payload.
+    	 * This method takes payload and header information for processing incoming messages.
+    	 * @param type package type
+    	 * @param payload payload of the TrackMe package
+    	 * @param srcEndpoint dtn source address
+    	 */
 		private void processIncomingMessage(PacketType type, byte[] payload, String srcEndpoint)
 		{
 			Log.d(LOGTAG, "PacketType: " + type.ordinal() + " Payload size: " + payload.length);
@@ -426,11 +488,14 @@ public class LocalDTNClient {
 			}
 		}
 
+    	/**
+    	 * Callback for the use of a third file descriptor.
+    	 */
 		@Override
 		public ParcelFileDescriptor fd() {
 			return null;
 		}
-
+		
 		@Override
 		public void progress(long current, long length) {
 		}
@@ -441,6 +506,12 @@ public class LocalDTNClient {
 		
    };
    
+	/**
+	 * Method for sending DTN bundles.
+	 * @param message message to be sent
+	 * @param endpoint destination DTN address
+	 * @param time time to live
+	 */
 	public boolean sendMessage(byte[] message, String endpoint, int time) throws Exception
 	{
 		Session s = mClient.getSession();
@@ -448,9 +519,15 @@ public class LocalDTNClient {
 		return s.send(destination, time, new String(message));
 	}
    
+	/**
+	 * Class for the presence notification loop.
+	 */
 	public class PresenceTimerTask extends TimerTask
 	{
 
+    	/**
+    	 * Method for sending presence messages.
+    	 */
 		@Override
 		public void run() {
 			byte[] payload = new byte[HEADER_SIZE];
