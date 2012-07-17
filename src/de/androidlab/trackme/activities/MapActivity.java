@@ -119,7 +119,7 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         	try {
         		((RadioButton)findViewById(MapData.defaultSetting)).performClick();
         	} catch(ClassCastException e) {
-        		Log.e("MapActivity", "Default Setting for \"Show\" failed!");d
+        		Log.e("MapActivity", "Default Setting for \"Show\" failed!");
         	}
             break;   
         }
