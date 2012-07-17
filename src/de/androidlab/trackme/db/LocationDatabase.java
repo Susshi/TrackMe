@@ -137,7 +137,7 @@ public class LocationDatabase {
 			{
 				long row = -1;
 				try {
-					row = openHelper.getWritableDatabase().insert("locations", null, toInsert);
+					row = openHelper.getWritableDatabase().insertOrThrow("locations", null, toInsert);
 				} 
 				catch (SQLException e)
 				{
