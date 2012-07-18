@@ -33,35 +33,6 @@ import de.androidlab.trackme.map.tasks.UpdateRoutesTask;
 
 public class MapActivity extends com.google.android.maps.MapActivity implements DatabaseListener {
 	
-	// TODO Testdaten entfernen
-	private static Vector<Pair<String, GeoPoint[]>> testInput1 = new Vector<Pair<String, GeoPoint[]>>();
-	private static Vector<Pair<String, GeoPoint[]>> testInput2 = new Vector<Pair<String, GeoPoint[]>>();
-	private static Vector<Pair<String, GeoPoint[]>> testInput3 = new Vector<Pair<String, GeoPoint[]>>();
-	private static int testCounter = 3;
-	static {
-		testInput1.add(new Pair<String, GeoPoint[]>("ddfe163345d338193ac2bdc183f8e9dcff904b43", // Hash of 01
-		                                            new GeoPoint[]{new GeoPoint((int) (51.206883*1E6),(int) (10.319823*1E6)),
-		                                                           new GeoPoint((int) (55.028022*1E6), (int) (-2.907716*1E6))}));
-        testInput1.add(new Pair<String, GeoPoint[]>("bcac9d1d8eab3713ae489224d0130c9468e7a0e3", // Hash of 02
-                                                    new GeoPoint[]{new GeoPoint((int) (53.225768*1E6),(int) (-8.093263*1E6)),
-                                                                   new GeoPoint((int) (55.429013*1E6), (int) (9.265136*1E6))}));
-        testInput1.add(new Pair<String, GeoPoint[]>("3ea6c91e241f256e5e3a88ebd647372022323a53", // Hash of 03
-                                                    new GeoPoint[]{new GeoPoint((int) (46.589069*1E6),(int) (2.365722*1E6)),
-                                                                   new GeoPoint((int) (39.605688*1E6), (int) (-3.610841*1E6))}));
-        
-        testInput2.add(new Pair<String, GeoPoint[]>("ddfe163345d338193ac2bdc183f8e9dcff904b43", // Hash of 01
-                                                    new GeoPoint[]{new GeoPoint((int) (51.206883*1E6),(int) (10.319823*1E6)),
-                                                                   new GeoPoint((int) (55.028022*1E6), (int) (-2.907716*1E6)),
-                                                                   new GeoPoint((int) (60.028022*1E6), (int) (-7.907716*1E6)),}));
-        testInput2.add(new Pair<String, GeoPoint[]>("3ea6c91e241f256e5e3a88ebd647372022323a53", // Hash of 03
-                                                    new GeoPoint[]{new GeoPoint((int) (53.225768*1E6),(int) (-8.093263*1E6)),
-                                                                   new GeoPoint((int) (55.429013*1E6), (int) (9.265136*1E6))}));
-        testInput2.add(new Pair<String, GeoPoint[]>("798f861ee74f6ff83ccbc9c53b419941d0080e50", // Hash of 04
-                                                    new GeoPoint[]{new GeoPoint((int) (46.589069*1E6),(int) (2.365722*1E6)),
-                                                                   new GeoPoint((int) (39.605688*1E6), (int) (-3.610841*1E6)),
-                                                                   new GeoPoint((int) (35.605688*1E6), (int) (3.610841*1E6))}));
-	}
-	// TODO Testdaten Ende
     private final int SHOWROUTESREQUEST = 0;
     private MapView map;
     private MyLocationOverlay myLocationOverlay;
@@ -170,7 +141,6 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
     }
     
     private void updateData(Vector<Pair<String, GeoPoint[]>> newData) {
-    	// TODO remove debugs
         Log.d("GUI", "Updating " + newData.size() + " entries");
         int[] points = new int[newData.size()];
         int i = 0;
@@ -373,7 +343,6 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
     private void setupMapView() {
         this.map = (MapView) findViewById(R.id.mapview_view_map);
         map.setBuiltInZoomControls(true);
-        map.getController().setCenter(new GeoPoint((int) (51.6998*1E6), (int) (5.485839*1E6))); // TODO remove after testing
       }
     
     private void setupMyLocation() {

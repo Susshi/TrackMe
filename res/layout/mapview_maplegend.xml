@@ -9,7 +9,7 @@
     <ListView
         android:id="@+id/mapview_legend_list"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
+        android:layout_height="wrap_content" android:divider="@null">
 
         <!-- Preview: listitem=@android:layout/simple_list_item_1 -->
     </ListView>

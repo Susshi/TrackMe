@@ -6,10 +6,12 @@ import java.util.List;
 import android.os.AsyncTask;
 import android.widget.ListView;
 
+import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapView;
 
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.activities.MapActivity;
+import de.androidlab.trackme.data.ContactInfo;
 import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.map.MapLegendListAdapter;
 import de.androidlab.trackme.map.RouteListEntry;
@@ -33,13 +35,15 @@ public class UpdateLegendTask extends AsyncTask<List<RouteListEntry>, Void, List
         for (List<RouteListEntry> dataset : data) {
             // TODO find a more efficient way to not display unchecked elements in legend
             for (RouteListEntry e : dataset) {
-                if (e.isChecked == true) {
-                    if (e.isFriend == true) {
-                        checkedOnly.add(e);
-                    } else {
-                        anonymous.add(e);
-                    }
-                }
+            	if (e.coords.length > 0) {
+	                if (e.isChecked == true) {
+	                    if (e.isFriend == true) {
+	                        checkedOnly.add(e);
+	                    } else {
+	                        anonymous.add(e);
+	                    }
+	                }
+            	}
             }
             checkedOnly.addAll(anonymous);
         }

@@ -39,8 +39,7 @@ public class MapLegendListAdapter extends android.widget.ArrayAdapter<RouteListE
             row = inflater.inflate(layoutResourceID, null);
         }
             ((ImageView)row.findViewById(R.id.maplegend_image)).setImageBitmap(entry.image);
-            // TODO remove "()"
-            ((TextView)row.findViewById(R.id.maplegend_name)).setText("(" + entry.coords.length + ")" + entry.name);
+            ((TextView)row.findViewById(R.id.maplegend_name)).setText(entry.name);
             row.findViewById(R.id.maplegend_root).setBackgroundColor(entry.color);
             row.setOnLongClickListener(new View.OnLongClickListener() {
                 public boolean onLongClick(View v) {
