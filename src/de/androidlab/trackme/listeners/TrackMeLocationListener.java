@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+import de.androidlab.trackme.data.SettingsData;
 import de.androidlab.trackme.db.LocationDatabase;
 import de.androidlab.trackme.utils.Converter;
 
@@ -46,7 +47,7 @@ public class TrackMeLocationListener implements LocationListener {
 		hash = Converter.calculateHash(phoneNumber);
 		  
 		long timestamp = System.currentTimeMillis();
-		long expiration = timestamp + 259200000; // 72 h
+		long expiration = timestamp + SettingsData.default_route_lifetime; // 72 h
 		
 		db.insertLocation(hash, newLocation.getLatitude(), newLocation.getLongitude(), expiration, timestamp);
 	}
@@ -94,8 +95,8 @@ public class TrackMeLocationListener implements LocationListener {
 
 	    // Check whether the new location fix is newer or older
 	    long timeDelta = location.getTime() - currentBestLocation.getTime();
-	    boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
-	    boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
+	    boolean isSignificantlyNewer = timeDelta > SettingsData.default_max_refresh_time;
+	    boolean isSignificantlyOlder = timeDelta < -SettingsData.default_max_refresh_time;
 	    boolean isNewer = timeDelta > 0;
 
 	    // If it's been more than two minutes since the current location, use the new location
@@ -149,12 +150,4 @@ public class TrackMeLocationListener implements LocationListener {
 	boolean useGPS;  
 	
 	Location currentBestLocation;
-	
-	public final static long gpsMinTime = 30 * 1000;  // in millisec
-	public final static long gpsMinDistance = 10;     // in meter
-	public final static long networkMinTime = 30 * 1000; // in millisec
-	public final static long networkMinDistance = 10;    // in meter
-	private static final int TWO_MINUTES = 1000 * 60 * 2; // max time between two locations 
-														  // before the new one is taken, even 
-														  // if it is less accurate
 }
