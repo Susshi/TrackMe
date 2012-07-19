@@ -25,5 +25,6 @@
     <string name="showlegend">Show legend</string>
     <string name="forceupdate">Force update</string>
     <string name="editdefaultsettings">Edit default settings</string>
+    <string name="credits_full">Android-Lab SS12\nTU-Braunschweig\n\n<font size="36"><b>TrackMe</b></font>\n\ncreated by\nChristian Brümmer, B.Sc.\nBennet Sartori\nMario Wozenilek, B.Sc.</string>
 
 </resources>

@@ -73,12 +73,16 @@ public class SettingsDTNTabActivity extends Activity {
     	super.onResume();
         EditText editRTT = (EditText)findViewById(R.id.settings_dtn_rtt);
         editRTT.setText(String.valueOf(SettingsData.default_retransmission_time));
+        editRTT.setSelection(editRTT.getText().length());
         EditText editPND = (EditText)findViewById(R.id.settings_dtn_pnd);
         editPND.setText(String.valueOf(SettingsData.default_presence_notification_delay));
+        editPND.setSelection(editPND.getText().length());
         EditText editPTTL = (EditText)findViewById(R.id.settings_dtn_pttl);
         editPTTL.setText(String.valueOf(SettingsData.default_presence_ttl));
+        editPTTL.setSelection(editPTTL.getText().length());
         EditText editDTTL = (EditText)findViewById(R.id.settings_dtn_dttl);
         editDTTL.setText(String.valueOf(SettingsData.default_data_ttl));
+        editDTTL.setSelection(editDTTL.getText().length());
     }
     
     protected void onPause() {

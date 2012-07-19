@@ -131,6 +131,7 @@ public class SettingsMapTabActivity extends Activity {
     	super.onResume();
         EditText editStroke = (EditText)findViewById(R.id.settings_map_edit_strokewidth);
         editStroke.setText(String.valueOf(MapData.defaultStrokeWidth));
+        editStroke.setSelection(editStroke.getText().length());
         CheckBox AABox = (CheckBox)findViewById(R.id.settings_map_checkbox_antialiasing);
         AABox.setChecked(MapData.defaultAntialiasing);
         CheckBox satBox = (CheckBox)findViewById(R.id.settings_map_checkbox_satellite);
