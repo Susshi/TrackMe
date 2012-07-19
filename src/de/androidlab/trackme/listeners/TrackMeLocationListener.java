@@ -1,5 +1,6 @@
 package de.androidlab.trackme.listeners;
 
+import android.app.Activity;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationListener;
@@ -40,7 +41,7 @@ public class TrackMeLocationListener implements LocationListener {
 		String phoneNumber, hash;
 		TelephonyManager tMgr =(TelephonyManager)appContext.getSystemService(Context.TELEPHONY_SERVICE);
 		phoneNumber = tMgr.getLine1Number();
-
+			
 		phoneNumber = Converter.normalizeNumber(phoneNumber);
 		hash = Converter.calculateHash(phoneNumber);
 		  

@@ -1,12 +1,17 @@
 package de.androidlab.trackme.activities;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 import de.androidlab.trackme.R;
 import de.androidlab.trackme.data.MapData;
 import de.androidlab.trackme.data.SettingsData;
@@ -21,6 +26,26 @@ public class TrackMeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+        
+        TelephonyManager tMgr =(TelephonyManager)this.getSystemService(Context.TELEPHONY_SERVICE);
+		String phoneNumber = tMgr.getLine1Number();
+		boolean makeClickable = true;
+		if(phoneNumber == null || phoneNumber.isEmpty())
+		{	
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setMessage("You have to have your own phone number set to use this App. Please insert a SIM-Card and start again! Otherwise this App will be useless for you!")
+						.setCancelable(false)
+						.setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+							}
+						});
+			AlertDialog alert = builder.create();
+			alert.show();		
+			makeClickable = true;
+			return;
+		}
+		Log.wtf("BLUBB", "TEST");
         
         // Map Button Events
         Button mapBtn = (Button)findViewById(R.id.main_button_map);
@@ -45,6 +70,13 @@ public class TrackMeActivity extends Activity {
                 startActivity(new Intent(TrackMeActivity.this, SettingsActivity.class));
             }
         });
+        
+        if(!makeClickable)
+        {
+        	mapBtn.setClickable(false);
+        	creditsBtn.setClickable(false);
+        	settingsBtn.setClickable(false);
+        }
 
         MapData.init(this, getSharedPreferences("TrackMeActivity", 0));
         SettingsData.init(getSharedPreferences("TrackMeActivity", 0));
@@ -70,7 +102,7 @@ public class TrackMeActivity extends Activity {
     public void onDestroy() {
     	super.onDestroy();
     	if(dtnclient != null) dtnclient.close(this);
-    	db.close();
+    	if(db != null) db.close();
     }
     
     public LocalDTNClient dtnclient;

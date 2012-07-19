@@ -184,7 +184,8 @@ public class LocationDatabase {
 	 */
 	public void close()
 	{
-		openHelper.close();
+		if(openHelper != null)
+			openHelper.close();
 	}
 	
 	/**
