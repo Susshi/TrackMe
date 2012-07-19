@@ -42,6 +42,7 @@
         <uses-library android:name="com.google.android.maps" android:required="true"/>
         <activity android:name=".activities.SettingsMapTabActivity"
                   android:theme="@android:style/Theme.NoTitleBar"></activity>
+        <activity android:name=".activities.SettingsDBTabActivity"></activity>
         
     </application>
 
