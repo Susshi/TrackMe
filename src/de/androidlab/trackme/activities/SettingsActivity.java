@@ -23,10 +23,16 @@ public class SettingsActivity extends TabActivity {
         TabHost.TabSpec general = tabHost.newTabSpec("tab1");
         general.setIndicator("DTN", res.getDrawable(R.drawable.ic_menu_settings));
         general.setContent(new Intent(SettingsActivity.this, SettingsDTNTabActivity.class));
-        tabHost.addTab(general);      
+        tabHost.addTab(general);   
+        
+        // ----- DB Tab -----
+        TabHost.TabSpec db = tabHost.newTabSpec("tab2");
+        db.setIndicator("Database", res.getDrawable(R.drawable.ic_menu_settings));
+        db.setContent(new Intent(SettingsActivity.this, SettingsDBTabActivity.class));
+        tabHost.addTab(db);
         
         // ----- Map Tab -----
-        TabHost.TabSpec map = tabHost.newTabSpec("tab2");
+        TabHost.TabSpec map = tabHost.newTabSpec("tab3");
         map.setIndicator("Map", res.getDrawable(R.drawable.ic_menu_map));
         map.setContent(new Intent(SettingsActivity.this, SettingsMapTabActivity.class));
         tabHost.addTab(map);
