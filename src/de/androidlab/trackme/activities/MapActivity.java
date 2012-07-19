@@ -68,9 +68,6 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         setupMapView();
         setupMyLocation();
         setupMapLegend();
-        
-        // Restore old state
-        restoreOldData();
     }
 
     private void restoreOldData() {
@@ -97,11 +94,11 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         }
         
         if (MapData.traffic == true) {
-            ((ToggleButton)findViewById(R.id.mapview_checkbox_traffic)).setChecked(true);
+            ((CheckBox)findViewById(R.id.mapview_checkbox_traffic)).setChecked(true);
             map.setTraffic(true);
         }
         if (MapData.satellite == true) {
-            ((ToggleButton)findViewById(R.id.mapview_checkbox_satellite)).setChecked(true);
+            ((CheckBox)findViewById(R.id.mapview_checkbox_satellite)).setChecked(true);
             map.setSatellite(true);
         }
         if (MapData.followActive == true) {
@@ -201,6 +198,8 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
           myLocationOverlay.enableMyLocation();
           myLocationOverlay.enableCompass();
       }
+      // Restore old state
+      restoreOldData();
     }
     
     @Override

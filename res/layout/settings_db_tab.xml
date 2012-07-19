@@ -8,11 +8,11 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data Retransmission Time (milliseconds)"
+        android:text="Update intervall (seconds)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
-        android:id="@+id/settings_dtn_rtt"
+        android:id="@+id/settings_db_update_intervall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:inputType="number" >
@@ -24,11 +24,11 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Presence Notification Delay (milliseconds)"
+        android:text="Min distance between points (meters)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
-        android:id="@+id/settings_dtn_pnd"
+        android:id="@+id/settings_db_min_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -38,11 +38,11 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Presence TTL (seconds)"
+        android:text="Max time between points (seconds)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
-        android:id="@+id/settings_dtn_pttl"
+        android:id="@+id/settings_db_max_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -52,11 +52,11 @@
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data TTL (seconds)"
+        android:text="Route TTL (hours)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
-        android:id="@+id/settings_dtn_dttl"
+        android:id="@+id/settings_db_route_ttl"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
