@@ -18,12 +18,12 @@ public class SettingsActivity extends TabActivity {
         // Create Tab functionality
         Resources res = getResources();
         TabHost tabHost = getTabHost();
-        
-        // ----- DTN Tab -----
-        TabHost.TabSpec general = tabHost.newTabSpec("tab1");
-        general.setIndicator("DTN", res.getDrawable(R.drawable.ic_menu_settings));
-        general.setContent(new Intent(SettingsActivity.this, SettingsDTNTabActivity.class));
-        tabHost.addTab(general);   
+
+        // ----- Map Tab -----
+        TabHost.TabSpec map = tabHost.newTabSpec("tab1");
+        map.setIndicator("Map", res.getDrawable(R.drawable.ic_menu_map));
+        map.setContent(new Intent(SettingsActivity.this, SettingsMapTabActivity.class));
+        tabHost.addTab(map);
         
         // ----- DB Tab -----
         TabHost.TabSpec db = tabHost.newTabSpec("tab2");
@@ -31,11 +31,11 @@ public class SettingsActivity extends TabActivity {
         db.setContent(new Intent(SettingsActivity.this, SettingsDBTabActivity.class));
         tabHost.addTab(db);
         
-        // ----- Map Tab -----
-        TabHost.TabSpec map = tabHost.newTabSpec("tab3");
-        map.setIndicator("Map", res.getDrawable(R.drawable.ic_menu_map));
-        map.setContent(new Intent(SettingsActivity.this, SettingsMapTabActivity.class));
-        tabHost.addTab(map);
+        // ----- DTN Tab -----
+        TabHost.TabSpec general = tabHost.newTabSpec("tab3");
+        general.setIndicator("DTN", res.getDrawable(R.drawable.ic_menu_settings));
+        general.setContent(new Intent(SettingsActivity.this, SettingsDTNTabActivity.class));
+        tabHost.addTab(general);
 
         // Set active tab
         tabHost.setCurrentTab(0);

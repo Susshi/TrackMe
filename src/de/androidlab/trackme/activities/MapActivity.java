@@ -238,7 +238,7 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
         Button editBtn = (Button) findViewById(R.id.mapview_btn_editdefault);
         editBtn.setOnClickListener(new View.OnClickListener() {
            public void onClick(View v) {
-               startActivity(new Intent(MapActivity.this, SettingsMapTabActivity.class));
+               startActivity(new Intent(MapActivity.this, SettingsActivity.class));
            } 
         });
     }
