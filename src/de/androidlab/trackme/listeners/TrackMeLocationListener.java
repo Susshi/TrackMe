@@ -47,7 +47,7 @@ public class TrackMeLocationListener implements LocationListener {
 		hash = Converter.calculateHash(phoneNumber);
 		  
 		long timestamp = System.currentTimeMillis();
-		long expiration = timestamp + SettingsData.default_route_lifetime; // 72 h
+		long expiration = timestamp + (SettingsData.default_route_lifetime * 3600000); 
 		
 		db.insertLocation(hash, newLocation.getLatitude(), newLocation.getLongitude(), expiration, timestamp);
 	}
@@ -95,8 +95,8 @@ public class TrackMeLocationListener implements LocationListener {
 
 	    // Check whether the new location fix is newer or older
 	    long timeDelta = location.getTime() - currentBestLocation.getTime();
-	    boolean isSignificantlyNewer = timeDelta > SettingsData.default_max_refresh_time;
-	    boolean isSignificantlyOlder = timeDelta < -SettingsData.default_max_refresh_time;
+	    boolean isSignificantlyNewer = timeDelta > SettingsData.default_max_refresh_time * 1000;
+	    boolean isSignificantlyOlder = timeDelta < -SettingsData.default_max_refresh_time * 1000;
 	    boolean isNewer = timeDelta > 0;
 
 	    // If it's been more than two minutes since the current location, use the new location
