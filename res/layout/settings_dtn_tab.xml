@@ -8,7 +8,7 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data Retransmission Time (milliseconds)"
+        android:text="Data Retransmission Time (seconds)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
@@ -24,7 +24,7 @@
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Presence Notification Delay (milliseconds)"
+        android:text="Presence Notification Delay (seconds)"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText

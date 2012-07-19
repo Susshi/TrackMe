@@ -27,10 +27,10 @@ public class SettingsDTNTabActivity extends Activity {
     
     private void setupRTT() {
         EditText editRTT = (EditText)findViewById(R.id.settings_dtn_rtt);
-        editRTT.setText(String.valueOf(SettingsData.default_retransmission_time));
+        editRTT.setText(String.valueOf(SettingsData.default_retransmission_time / 1000));
         editRTT.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-            	SettingsData.default_retransmission_time = Integer.parseInt(((EditText)v).getText().toString());
+            	SettingsData.default_retransmission_time = Integer.parseInt(((EditText)v).getText().toString()) * 1000;
                 return false;
             }
         });
@@ -38,10 +38,10 @@ public class SettingsDTNTabActivity extends Activity {
     
     private void setupPND() {
         EditText editPND = (EditText)findViewById(R.id.settings_dtn_pnd);
-        editPND.setText(String.valueOf(SettingsData.default_presence_notification_delay));
+        editPND.setText(String.valueOf(SettingsData.default_presence_notification_delay / 1000));
         editPND.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                SettingsData.default_presence_notification_delay = Integer.parseInt(((EditText)v).getText().toString());
+                SettingsData.default_presence_notification_delay = Integer.parseInt(((EditText)v).getText().toString()) * 1000;
                 return false;
             }
         });
@@ -72,10 +72,10 @@ public class SettingsDTNTabActivity extends Activity {
     protected void onResume() {
     	super.onResume();
         EditText editRTT = (EditText)findViewById(R.id.settings_dtn_rtt);
-        editRTT.setText(String.valueOf(SettingsData.default_retransmission_time));
+        editRTT.setText(String.valueOf(SettingsData.default_retransmission_time / 1000));
         editRTT.setSelection(editRTT.getText().length());
         EditText editPND = (EditText)findViewById(R.id.settings_dtn_pnd);
-        editPND.setText(String.valueOf(SettingsData.default_presence_notification_delay));
+        editPND.setText(String.valueOf(SettingsData.default_presence_notification_delay / 1000));
         editPND.setSelection(editPND.getText().length());
         EditText editPTTL = (EditText)findViewById(R.id.settings_dtn_pttl);
         editPTTL.setText(String.valueOf(SettingsData.default_presence_ttl));
