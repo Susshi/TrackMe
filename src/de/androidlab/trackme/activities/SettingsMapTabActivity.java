@@ -37,10 +37,7 @@ public class SettingsMapTabActivity extends Activity {
         editStroke.setText(String.valueOf(MapData.defaultStrokeWidth));
         editStroke.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE
-                    || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                    MapData.defaultStrokeWidth = Integer.parseInt(((EditText)v).getText().toString());
-                }
+                MapData.defaultStrokeWidth = Integer.parseInt(((EditText)v).getText().toString());
                 return false;
             }
         });
@@ -97,9 +94,9 @@ public class SettingsMapTabActivity extends Activity {
     }
     
     private void setupShowLegend() {
-        CheckBox followBox = (CheckBox)findViewById(R.id.settings_map_checkbox_legend);
-        followBox.setChecked(MapData.defaultShowLegend);
-        followBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+        CheckBox legendBox = (CheckBox)findViewById(R.id.settings_map_checkbox_legend);
+        legendBox.setChecked(MapData.defaultShowLegend);
+        legendBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MapData.defaultShowLegend = isChecked;
             }
@@ -128,6 +125,32 @@ public class SettingsMapTabActivity extends Activity {
                 MapData.defaultSetting = R.id.mapview_radio_all;
             }
         });
+    }
+    
+    protected void onResume() {
+    	super.onResume();
+        EditText editStroke = (EditText)findViewById(R.id.settings_map_edit_strokewidth);
+        editStroke.setText(String.valueOf(MapData.defaultStrokeWidth));
+        CheckBox AABox = (CheckBox)findViewById(R.id.settings_map_checkbox_antialiasing);
+        AABox.setChecked(MapData.defaultAntialiasing);
+        CheckBox satBox = (CheckBox)findViewById(R.id.settings_map_checkbox_satellite);
+        satBox.setChecked(MapData.defaultSatellite);
+        CheckBox trafficBox = (CheckBox)findViewById(R.id.settings_map_checkbox_traffic);
+        trafficBox.setChecked(MapData.defaultTraffic);
+        CheckBox updateBox = (CheckBox)findViewById(R.id.settings_map_checkbox_update);
+        updateBox.setChecked(MapData.defaultUpdate);
+        CheckBox followBox = (CheckBox)findViewById(R.id.settings_map_checkbox_follow);
+        followBox.setChecked(MapData.defaultFollow);
+        CheckBox legendBox = (CheckBox)findViewById(R.id.settings_map_checkbox_legend);
+        legendBox.setChecked(MapData.defaultShowLegend);
+        RadioButton friendsBtn = (RadioButton)findViewById(R.id.settings_map_radio_friends);
+        if (MapData.defaultSetting == R.id.mapview_radio_friends) {
+            friendsBtn.setChecked(true);
+        }
+        RadioButton allBtn = (RadioButton)findViewById(R.id.settings_map_radio_all);
+        if (MapData.defaultSetting == R.id.mapview_radio_all) {
+            allBtn.setChecked(true);
+        }
     }
     
     protected void onPause() {

@@ -2,6 +2,7 @@ package de.androidlab.trackme.activities;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -29,10 +30,7 @@ public class SettingsDTNTabActivity extends Activity {
         editRTT.setText(String.valueOf(SettingsData.default_retransmission_time));
         editRTT.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE
-                    || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                	SettingsData.default_retransmission_time = Integer.parseInt(((EditText)v).getText().toString());
-                }
+            	SettingsData.default_retransmission_time = Integer.parseInt(((EditText)v).getText().toString());
                 return false;
             }
         });
@@ -43,10 +41,7 @@ public class SettingsDTNTabActivity extends Activity {
         editPND.setText(String.valueOf(SettingsData.default_presence_notification_delay));
         editPND.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE
-                    || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                	SettingsData.default_presence_notification_delay = Integer.parseInt(((EditText)v).getText().toString());
-                }
+                SettingsData.default_presence_notification_delay = Integer.parseInt(((EditText)v).getText().toString());
                 return false;
             }
         });
@@ -57,10 +52,7 @@ public class SettingsDTNTabActivity extends Activity {
         editPTTL.setText(String.valueOf(SettingsData.default_presence_ttl));
         editPTTL.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE
-                    || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                	SettingsData.default_presence_ttl = Integer.parseInt(((EditText)v).getText().toString());
-                }
+                SettingsData.default_presence_ttl = Integer.parseInt(((EditText)v).getText().toString());
                 return false;
             }
         });
@@ -71,13 +63,22 @@ public class SettingsDTNTabActivity extends Activity {
         editDTTL.setText(String.valueOf(SettingsData.default_data_ttl));
         editDTTL.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if (actionId == EditorInfo.IME_ACTION_DONE
-                    || (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
-                	SettingsData.default_data_ttl = Integer.parseInt(((EditText)v).getText().toString());
-                }
+                SettingsData.default_data_ttl = Integer.parseInt(((EditText)v).getText().toString());
                 return false;
             }
         });
+    }
+    
+    protected void onResume() {
+    	super.onResume();
+        EditText editRTT = (EditText)findViewById(R.id.settings_dtn_rtt);
+        editRTT.setText(String.valueOf(SettingsData.default_retransmission_time));
+        EditText editPND = (EditText)findViewById(R.id.settings_dtn_pnd);
+        editPND.setText(String.valueOf(SettingsData.default_presence_notification_delay));
+        EditText editPTTL = (EditText)findViewById(R.id.settings_dtn_pttl);
+        editPTTL.setText(String.valueOf(SettingsData.default_presence_ttl));
+        EditText editDTTL = (EditText)findViewById(R.id.settings_dtn_dttl);
+        editDTTL.setText(String.valueOf(SettingsData.default_data_ttl));
     }
     
     protected void onPause() {

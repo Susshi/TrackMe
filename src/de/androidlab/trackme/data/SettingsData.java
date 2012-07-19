@@ -2,6 +2,7 @@ package de.androidlab.trackme.data;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
 public class SettingsData {
 	
