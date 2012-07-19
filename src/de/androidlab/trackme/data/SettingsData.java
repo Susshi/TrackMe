@@ -9,13 +9,13 @@ public class SettingsData {
 	private static boolean isInitialized = false;
 	//DTN
 	// 15 minutes default retransmission time
-	public static int default_retransmission_time = 1000 * 60 * 1;
+	public static int default_retransmission_time = 1000 * 60 * 5;
 	// default presence notification delay - 5 seconds
 	public static int default_presence_notification_delay = 1000 * 5;
 	// default presence ttl - 1000 seconds
-	public static int default_presence_ttl = 1000;
+	public static int default_presence_ttl = 60;
 	// default data ttl - 1000 seconds
-	public static int default_data_ttl = 1000;
+	public static int default_data_ttl = 60;
 	
 	//DB
 	public static long default_location_update_min_time = 30; //seconds
