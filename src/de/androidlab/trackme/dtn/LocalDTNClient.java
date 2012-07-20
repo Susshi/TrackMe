@@ -536,7 +536,7 @@ public class LocalDTNClient {
 			ByteBuffer bb = ByteBuffer.wrap(payload);
 			bb.position(0);
 			bb.putInt(PacketType.PRESENCE.ordinal());
-			bb.putInt(0);	// no payload
+			//bb.putInt(0);	// no payload
 			bb.position(0);
 			bb.get(payload);
 			
