@@ -61,7 +61,7 @@ public class LocalDTNClient {
 	// Size of type identification in header
 	private final static int HEADER_TYPE_SIZE = 4;
 	// Size of the payload length information
-	private final static int HEADER_LENGTH_SIZE = 4;
+	private final static int HEADER_LENGTH_SIZE = 0;
 	// Entire header size
 	private final static int HEADER_SIZE = HEADER_TYPE_SIZE + HEADER_LENGTH_SIZE;
 	
@@ -396,16 +396,11 @@ public class LocalDTNClient {
 		        		ByteBuffer bb = ByteBuffer.wrap(payload);
 		        		bb.position(0);
 		        		int type = bb.getInt();
-		        		int size = bb.getInt();
-		        		Log.d(LOGTAG, "IN EXECUTOR 3 type / size: " + type + " / " + size);
-		        		if(bb.remaining() >= size)
-		        		{
-		        			Log.d(LOGTAG, "IN EXECUTOR 4");
-		        			byte[] pay = new byte[size];
-		        			bb.get(pay);
-		        			processIncomingMessage(PacketType.values()[type], pay, endpoint);
-		        		}
-		        		
+		        		Log.d(LOGTAG, "IN EXECUTOR 3 type / size: " + type);
+	        			byte[] pay = new byte[bb.remaining()];
+	        			bb.get(pay);
+	        			processIncomingMessage(PacketType.values()[type], pay, endpoint);
+	        		
 		        	}
 		        }});
 		}
@@ -459,7 +454,7 @@ public class LocalDTNClient {
 					bb.position(0);
 					bb.putInt(PacketType.DATA.ordinal());
 					Log.d("SENDEN", "Size " + result.getBytes().length);
-					bb.putInt(result.getBytes().length);
+					//bb.putInt(result.getBytes().length);
 					bb.put(result.getBytes());
 					bb.position(0);
 					bb.get(p);
