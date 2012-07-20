@@ -39,7 +39,6 @@ public class LocationDatabase {
 	{
 		openHelper = new LocationDatabaseOpenHelper(context);
 	
-		listeners = new Vector<DatabaseListener>();
 	}
 	
 	/**
@@ -396,5 +395,5 @@ public class LocationDatabase {
 	/**
 	 * All registered DatabaseListeners are stored here
 	 */
-	Vector<DatabaseListener> listeners;
+	Vector<DatabaseListener> listeners = new Vector<DatabaseListener>();
 }

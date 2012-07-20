@@ -45,7 +45,6 @@ public class TrackMeActivity extends Activity {
 			makeClickable = true;
 			return;
 		}
-		Log.wtf("BLUBB", "TEST");
         
         // Map Button Events
         Button mapBtn = (Button)findViewById(R.id.main_button_map);

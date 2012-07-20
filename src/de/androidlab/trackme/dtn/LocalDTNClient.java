@@ -61,7 +61,7 @@ public class LocalDTNClient {
 	// Size of type identification in header
 	private final static int HEADER_TYPE_SIZE = 4;
 	// Size of the payload length information
-	private final static int HEADER_LENGTH_SIZE = 4;
+	private final static int HEADER_LENGTH_SIZE = 0;
 	// Entire header size
 	private final static int HEADER_SIZE = HEADER_TYPE_SIZE + HEADER_LENGTH_SIZE;
 	
@@ -168,7 +168,7 @@ public class LocalDTNClient {
 				if(mExecutor != null && mQueryTask != null)
 					mExecutor.execute(mQueryTask);
 				else
-					Log.e("ERROR", "LocalDTNClient onReceive: no executor or query task available!");
+					Log.e("ERROR", "LocalDTNClient onReceive: no executor or query task available! Executor: " + mExecutor + " QueryTask " + mQueryTask);
 			}
 		}
 	};
@@ -389,19 +389,18 @@ public class LocalDTNClient {
 			Log.d(LOGTAG, "Incoming packet. Size: " + payload.length);
 			mExecutor.execute(new Runnable() {
 		        public void run() {
+		        	Log.d(LOGTAG, "IN EXECUTOR 1: " + payload.length);
 		        	if(payload.length >= HEADER_SIZE)
-		        	{		        		
+		        	{
+		        		Log.d(LOGTAG, "IN EXECUTOR 2: " + payload.length);
 		        		ByteBuffer bb = ByteBuffer.wrap(payload);
 		        		bb.position(0);
 		        		int type = bb.getInt();
-		        		int size = bb.getInt();
-		        		if(bb.remaining() >= size)
-		        		{
-		        			byte[] pay = new byte[size];
-		        			bb.get(pay);
-		        			processIncomingMessage(PacketType.values()[type], pay, endpoint);
-		        		}
-		        		
+		        		Log.d(LOGTAG, "IN EXECUTOR 3 type / size: " + type);
+	        			byte[] pay = new byte[bb.remaining()];
+	        			bb.get(pay);
+	        			processIncomingMessage(PacketType.values()[type], pay, endpoint);
+	        		
 		        	}
 		        }});
 		}
@@ -421,14 +420,16 @@ public class LocalDTNClient {
 			case PRESENCE:
 				Log.d(LOGTAG, "processIncomingMessage: PRESENCE");
 				long currentTime = System.currentTimeMillis();
+				boolean newEntry = false;
 				if(!mPresenceMap.containsKey(srcEndpoint))
 				{
 					// fill in time if not existing before
 					mPresenceMap.put(srcEndpoint, currentTime);
+					newEntry = true;
 					Log.d(LOGTAG, "processIncomingMessage: new endpoint");
 				}
 				Log.d(LOGTAG, "processIncomingMessage: time elapsed: " + (currentTime - mPresenceMap.get(srcEndpoint)));
-				if((currentTime - mPresenceMap.get(srcEndpoint)) > SettingsData.default_retransmission_time)
+				if((currentTime - mPresenceMap.get(srcEndpoint)) > SettingsData.default_retransmission_time || newEntry)
 				{
 					Log.d(LOGTAG, "processIncomingMessage: time elapsed !");
 					// update time
@@ -447,12 +448,13 @@ public class LocalDTNClient {
 					}
 					
 					// create header and attach payload
-					byte[] p = new byte[HEADER_SIZE + result.length()];
+					byte[] p = new byte[HEADER_SIZE + result.getBytes().length];
 					
 					ByteBuffer bb = ByteBuffer.wrap(p);
 					bb.position(0);
 					bb.putInt(PacketType.DATA.ordinal());
-					bb.putInt(result.length());
+					Log.d("SENDEN", "Size " + result.getBytes().length);
+					//bb.putInt(result.getBytes().length);
 					bb.put(result.getBytes());
 					bb.position(0);
 					bb.get(p);
@@ -534,7 +536,7 @@ public class LocalDTNClient {
 			ByteBuffer bb = ByteBuffer.wrap(payload);
 			bb.position(0);
 			bb.putInt(PacketType.PRESENCE.ordinal());
-			bb.putInt(0);	// no payload
+			//bb.putInt(0);	// no payload
 			bb.position(0);
 			bb.get(payload);
 			
