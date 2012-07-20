@@ -4,6 +4,9 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -40,6 +43,7 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
     private List<RouteListEntry> toAdd = new LinkedList<RouteListEntry>();
     private ListView legend;
     private int settingsVisibility = View.GONE;
+    private Executor executor = Executors.newSingleThreadExecutor();
     
     /** Called when the activity is first created. */
     @Override
@@ -124,7 +128,7 @@ public class MapActivity extends com.google.android.maps.MapActivity implements 
                 });
             }
         };
-        new UpdateThread(newData).start();      
+        executor.execute(new UpdateThread(newData));      
     }
     
     private void updateDisplay() {
