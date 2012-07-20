@@ -263,8 +263,11 @@ public class LocationDatabase {
 		while(rows.moveToNext())
 		{
 			String raw = "";
-			for(int k = 0; k < rows.getColumnCount(); k++)
-				raw = raw + " " + rows.getString(k); 
+			raw = raw + " " + rows.getString(0);
+			raw = raw + " " + rows.getDouble(1);
+			raw = raw + " " + rows.getDouble(2);
+			raw = raw + " " + rows.getLong(3);
+			raw = raw + " " + rows.getLong(4);
 			dbAsStringVector.add(raw);
 		}
 		
@@ -324,8 +327,8 @@ public class LocationDatabase {
 			}
 			
 			int lat, lon;
-			lat = (int)(rows.getFloat(1) * 1E6);
-			lon = (int)(rows.getFloat(2) * 1E6);
+			lat = (int)(rows.getDouble(1) * 1E6);
+			lon = (int)(rows.getDouble(2) * 1E6);
 			GeoPoint point = new GeoPoint(lat,lon);
 			currentPoints.add(point);	
 		}
