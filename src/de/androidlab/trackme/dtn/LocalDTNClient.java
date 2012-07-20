@@ -453,11 +453,12 @@ public class LocalDTNClient {
 					}
 					
 					// create header and attach payload
-					byte[] p = new byte[HEADER_SIZE + result.length()];
+					byte[] p = new byte[HEADER_SIZE + result.getBytes().length];
 					
 					ByteBuffer bb = ByteBuffer.wrap(p);
 					bb.position(0);
 					bb.putInt(PacketType.DATA.ordinal());
+					Log.d("SENDEN", "Size " + result.getBytes().length);
 					bb.putInt(result.getBytes().length);
 					bb.put(result.getBytes());
 					bb.position(0);
