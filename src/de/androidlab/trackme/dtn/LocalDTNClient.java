@@ -389,14 +389,18 @@ public class LocalDTNClient {
 			Log.d(LOGTAG, "Incoming packet. Size: " + payload.length);
 			mExecutor.execute(new Runnable() {
 		        public void run() {
+		        	Log.d(LOGTAG, "IN EXECUTOR 1: " + payload.length);
 		        	if(payload.length >= HEADER_SIZE)
-		        	{		        		
+		        	{
+		        		Log.d(LOGTAG, "IN EXECUTOR 2: " + payload.length);
 		        		ByteBuffer bb = ByteBuffer.wrap(payload);
 		        		bb.position(0);
 		        		int type = bb.getInt();
 		        		int size = bb.getInt();
+		        		Log.d(LOGTAG, "IN EXECUTOR 3 type / size: " + type + " / " + size);
 		        		if(bb.remaining() >= size)
 		        		{
+		        			Log.d(LOGTAG, "IN EXECUTOR 4");
 		        			byte[] pay = new byte[size];
 		        			bb.get(pay);
 		        			processIncomingMessage(PacketType.values()[type], pay, endpoint);
