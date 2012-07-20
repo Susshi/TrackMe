@@ -458,7 +458,7 @@ public class LocalDTNClient {
 					ByteBuffer bb = ByteBuffer.wrap(p);
 					bb.position(0);
 					bb.putInt(PacketType.DATA.ordinal());
-					bb.putInt(result.length());
+					bb.putInt(result.getBytes().length);
 					bb.put(result.getBytes());
 					bb.position(0);
 					bb.get(p);
