@@ -89,9 +89,12 @@ public class TrackMeActivity extends Activity {
         
         // Setup location callbacks
         LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
-        TrackMeLocationListener locationListener = new TrackMeLocationListener(db, getBaseContext());
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, SettingsData.default_location_update_min_time * 1000, SettingsData.default_location_update_min_distance, locationListener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, SettingsData.default_location_update_min_time * 1000, SettingsData.default_location_update_min_distance, locationListener);
+        if(locationListener == null)
+        {
+        	locationListener = new TrackMeLocationListener(db, getBaseContext());
+        	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, SettingsData.default_location_update_min_time * 1000, SettingsData.default_location_update_min_distance, locationListener);
+        	locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, SettingsData.default_location_update_min_time * 1000, SettingsData.default_location_update_min_distance, locationListener);
+        }
 
         // bereits gestartet
         initialized = true;
@@ -102,9 +105,15 @@ public class TrackMeActivity extends Activity {
     	super.onDestroy();
     	if(dtnclient != null) dtnclient.close(this);
     	if(db != null) db.close();
+    	if(locationListener != null)
+    	{
+    		LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+    		locationManager.removeUpdates(locationListener);
+    	}
     }
     
     public LocalDTNClient dtnclient;
     public static LocationDatabase db = new LocationDatabase();
+    private TrackMeLocationListener locationListener;
     public static boolean initialized = false;
 }
