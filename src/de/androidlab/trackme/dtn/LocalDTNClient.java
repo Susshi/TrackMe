@@ -168,7 +168,7 @@ public class LocalDTNClient {
 				if(mExecutor != null && mQueryTask != null)
 					mExecutor.execute(mQueryTask);
 				else
-					Log.e("ERROR", "LocalDTNClient onReceive: no executor or query task available!");
+					Log.e("ERROR", "LocalDTNClient onReceive: no executor or query task available! Executor: " + mExecutor + " QueryTask " + mQueryTask);
 			}
 		}
 	};
