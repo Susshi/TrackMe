@@ -1,6 +1,7 @@
 package de.androidlab.trackme.map.tasks;
 
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import android.graphics.Paint;
 import android.os.AsyncTask;
@@ -20,6 +21,7 @@ public class UpdateRoutesTask extends AsyncTask<List<RouteListEntry>, Pair<Boole
     private MapView map;
     private int strokeWidth;
     private boolean antialiasing;
+    private static Semaphore mutex = new Semaphore(1);
     
     public UpdateRoutesTask(MapActivity mapActivity, MapView map, int strokeWidth, boolean antialiasing) {
         this.mapActivity = mapActivity;
@@ -31,34 +33,41 @@ public class UpdateRoutesTask extends AsyncTask<List<RouteListEntry>, Pair<Boole
     @Override
     // first = toRemove, second = toAdd, third = data
     protected Pair<Integer, Integer> doInBackground(List<RouteListEntry>... params) {
-    	Log.d("GUI", "Number of Overlays before update " + map.getOverlays().size());
-        if (params.length == 3) {
-            int newEntries = params[1].size();
-            int oldEntries = params[0].size();
-            // Remove
-            for (RouteListEntry e : params[2]) {
-                Pair<Boolean, RouteListEntry> route = new Pair<Boolean, RouteListEntry>(true, e);
-                publishProgress(route);
-            }
-            params[2].removeAll(params[0]);
-            params[0].clear();
-            
-            // Draw new and redraw old
-            params[2].addAll(params[1]);
-            params[1].clear();   
-            for (RouteListEntry e : params[2]) {
-                if (e.isChecked == true) {
-                    Pair<Boolean, RouteListEntry> route = new Pair<Boolean, RouteListEntry>(false, e);
-                    publishProgress(route);
-                } else {
-                    Pair<Boolean, RouteListEntry> route = new Pair<Boolean, RouteListEntry>(true, e);
-                    publishProgress(route);
-                }
-            }
-            return new Pair<Integer, Integer>(newEntries, oldEntries);
-        } else {
-            throw new IllegalArgumentException("3 parameter needed");
-        }
+    	try {
+			mutex.acquire();
+	    	Log.d("GUI", "Number of Overlays before update " + map.getOverlays().size());
+	        if (params.length == 3) {
+	            int newEntries = params[1].size();
+	            int oldEntries = params[0].size();
+	            // Remove
+	            for (RouteListEntry e : params[2]) {
+	                Pair<Boolean, RouteListEntry> route = new Pair<Boolean, RouteListEntry>(true, e);
+	                publishProgress(route);
+	            }
+	            params[2].removeAll(params[0]);
+	            params[0].clear();
+	            
+	            // Draw new and redraw old
+	            params[2].addAll(params[1]);
+	            params[1].clear();   
+	            for (RouteListEntry e : params[2]) {
+	                if (e.isChecked == true) {
+	                    Pair<Boolean, RouteListEntry> route = new Pair<Boolean, RouteListEntry>(false, e);
+	                    publishProgress(route);
+	                } else {
+	                    Pair<Boolean, RouteListEntry> route = new Pair<Boolean, RouteListEntry>(true, e);
+	                    publishProgress(route);
+	                }
+	            }
+	            return new Pair<Integer, Integer>(newEntries, oldEntries);
+	        } else {
+	            throw new IllegalArgumentException("3 parameter needed");
+	        }
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return null;
     }
     
     protected void onProgressUpdate(Pair<Boolean, RouteListEntry>... routes) {
@@ -78,6 +87,7 @@ public class UpdateRoutesTask extends AsyncTask<List<RouteListEntry>, Pair<Boole
             toast += result.second > 0 ? "\n" + result.second + " entries are obsolete" : "";
             Toast.makeText(mapActivity, toast, Toast.LENGTH_SHORT).show();
         }
+        mutex.release();
     }
     
     private void drawRoute(RouteListEntry e) {
