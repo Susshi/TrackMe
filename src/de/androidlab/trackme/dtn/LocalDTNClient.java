@@ -421,14 +421,16 @@ public class LocalDTNClient {
 			case PRESENCE:
 				Log.d(LOGTAG, "processIncomingMessage: PRESENCE");
 				long currentTime = System.currentTimeMillis();
+				boolean newEntry = false;
 				if(!mPresenceMap.containsKey(srcEndpoint))
 				{
 					// fill in time if not existing before
 					mPresenceMap.put(srcEndpoint, currentTime);
+					newEntry = true;
 					Log.d(LOGTAG, "processIncomingMessage: new endpoint");
 				}
 				Log.d(LOGTAG, "processIncomingMessage: time elapsed: " + (currentTime - mPresenceMap.get(srcEndpoint)));
-				if((currentTime - mPresenceMap.get(srcEndpoint)) > SettingsData.default_retransmission_time)
+				if((currentTime - mPresenceMap.get(srcEndpoint)) > SettingsData.default_retransmission_time || newEntry)
 				{
 					Log.d(LOGTAG, "processIncomingMessage: time elapsed !");
 					// update time
